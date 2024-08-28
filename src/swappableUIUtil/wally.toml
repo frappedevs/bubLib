@@ -1,0 +1,11 @@
+[package]
+name = "bubshurb/swappableuiutil"
+description = "A utility which helps implement swappable UI."
+authors = ["bubshurb"]
+version = "1.0.1"
+license = "MIT"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+Trove = "sleitnick/trove@1"
