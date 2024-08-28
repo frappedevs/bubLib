@@ -13,7 +13,7 @@ as wally dependencies. For e.g, the following may be a `wally.toml` file for a p
 
 ```toml
 [package]
-name = "someUser/project"
+name = "someuser/project"
 version = "1.0.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
