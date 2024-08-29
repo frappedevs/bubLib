@@ -252,11 +252,15 @@ end
 	--> 10
 	```
 
-	@return Promise
+	:::note
+	The returned promise will be cancelled as soon as the property object is destroyed.
+	:::
+
+	@return Promise 
 ]=]
 
 function Property.__index:valuePromise(valuePredicate: ((newValue: any, oldValue: any) -> boolean)?)
-	return Promise.new(function(resolve)
+	return self._trove:AddPromise(Promise.new(function(resolve)
 		if valuePredicate ~= nil then
 			local lastValue
 			while valuePredicate(self:get(), lastValue) ~= true do
@@ -270,7 +274,7 @@ function Property.__index:valuePromise(valuePredicate: ((newValue: any, oldValue
 		end
 
 		resolve(self:get())
-	end)
+	end))
 end
 
 --[=[
