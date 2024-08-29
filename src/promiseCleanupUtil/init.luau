@@ -19,10 +19,10 @@ function promiseCleanupUtil.addPromiseAndCleanupOnFinishedRunning(
 	key: string,
 	cleanupTable: { [string]: any }
 )
-	cleanupTable.playerCustomAnimatorSetupPromise[key] = promise
+	cleanupTable[key] = promise
 	promise:finally(function()
-		if promise == cleanupTable.playerCustomAnimatorSetupPromise[key] then
-			cleanupTable.playerCustomAnimatorSetupPromise[key] = nil
+		if promise == cleanupTable[key] then
+			cleanupTable[key] = nil
 		end
 	end)
 end
