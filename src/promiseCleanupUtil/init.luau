@@ -17,7 +17,7 @@ local promiseCleanupUtil = {}
 function promiseCleanupUtil.addPromiseAndCleanupOnFinishedRunning(
 	promise,
 	key: string,
-	cleanupTable: {[string]: any}
+	cleanupTable: { [string]: any }
 )
 	cleanupTable.playerCustomAnimatorSetupPromise[key] = promise
 	promise:finally(function()
@@ -25,6 +25,20 @@ function promiseCleanupUtil.addPromiseAndCleanupOnFinishedRunning(
 			cleanupTable.playerCustomAnimatorSetupPromise[key] = nil
 		end
 	end)
+end
+
+--[=[
+	Finds the given promise keyed by `key` in `cleanupTable`, if found, it will be cancelled and
+	the promise will be removed from the `cleanupTable`..
+]=]
+
+function promiseCleanupUtil.findAndCancelPromise(key: string, cleanupTable: { [string]: any })
+	local targetPromise = cleanupTable.playerCustomAnimatorSetupPromise[key]
+
+	if targetPromise ~= nil then
+		cleanupTable.playerCustomAnimatorSetupPromise[key] = nil
+		targetPromise:cancel()
+	end
 end
 
 return table.freeze(promiseCleanupUtil)
