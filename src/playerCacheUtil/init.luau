@@ -11,43 +11,11 @@
 	```
 ]=]
 
-local PLAYER_CACHE_CLEANUP_ATTRIBUTE = "__playerCacheCleanup"
-local DEFAULT_PLAYER_CACHE = {}
+local Players = game:GetService("Players")
 
 local cachePerPlayer = {}
 
 local playerCacheUtil = {}
-
---[=[
-	Cleans up the given player's cache. Calls to [playerCacheUtil.cacheForPlayer] for the same player will now
-	return **a global empty table**.
-
-	```lua
-	-- Script 1:
-	local cache = playerCacheUtil.cleanupPlayerCache(player)
-	cache.test = 150
-
-	print(cache) --> {test = 150}
-	print(playerCacheUtil.cacheForPlayer(player) == cache) --> true
-
-	playerCacheUtil.cleanupPlayerCache(player)
-
-	local cacheNow = playerCacheUtil.cacheForPlayer(player)
-	print(cacheNow) --> {}
-	print(cacheNow == cache) --> false
-	```
-
-	:::warning Potential memory leak
-	This method assigns an attribute to the player object, `__playerCacheCleanup` for cleanup purposes. If this attribute
-	is removed as a result of developer work, then this can potentially induce a memory leak! Ideally you should call this method 
-	for the player once they leave the game.
-	:::
-]=]
-
-function playerCacheUtil.cleanupPlayerCache(player: Player)
-	player:SetAttribute(PLAYER_CACHE_CLEANUP_ATTRIBUTE, true)
-	cachePerPlayer[player] = nil
-end
 
 --[=[
 	Returns the cache for the given player. 
@@ -71,14 +39,18 @@ end
 	cache.opper = 5
 	print(cache) --> {opper = 5} 
 	```
-
 	:::
+
+	:::warning Potential error
+    This method will throw an error if `player` is not present in game.
+    :::
 ]=]
 
 function playerCacheUtil.cacheForPlayer(player: Player)
-	if player:GetAttribute(PLAYER_CACHE_CLEANUP_ATTRIBUTE) then
-		return DEFAULT_PLAYER_CACHE
-	end
+	assert(
+		player:IsDescendantOf(Players),
+		string.format('Given player "%s" must be in game.', player.Name)
+	)
 
 	cachePerPlayer[player] = cachePerPlayer[player] or {}
 
@@ -86,5 +58,9 @@ function playerCacheUtil.cacheForPlayer(player: Player)
 	cachePerPlayer[player][file] = cachePerPlayer[player][file] or {}
 	return cachePerPlayer[player][file]
 end
+
+Players.PlayerRemoving:Connect(function(player: Player)
+	cachePerPlayer[player] = nil
+end)
 
 return table.freeze(playerCacheUtil)
