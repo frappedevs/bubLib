@@ -548,7 +548,7 @@ function RemoteSignal.__index:destroy()
 end
 
 function RemoteSignal.__index:_handleClientFire(client, serializedArgs, callback)
-	local args = { client, networkUtil.deserializeAndUnpack(self._remote, serializedArgs) }
+	local args = { client, networkUtil.deserializeAndUnpackArgs(self._remote, serializedArgs) }
 	if self:_authenticateClientFireRequest(args) == false then
 		return
 	end

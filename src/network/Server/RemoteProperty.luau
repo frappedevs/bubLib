@@ -802,7 +802,8 @@ function RemoteProperty.__index:dispatch(name, parent)
 			end
 
 			self._clientSettingValueRateLimitClocks[client] = Workspace:GetServerTimeNow()
-			setData = networkUtil.deserializeAndUnpack(self._valueDispatcherRemoteFunction, setData)
+			setData =
+				networkUtil.deserializeAndUnpackArgs(self._valueDispatcherRemoteFunction, setData)
 			local clientSetMiddlewareAccumulatedResponses, clientSetMiddlewareResponsesAreValid =
 				networkUtil.truncateAccumulatedResponses(
 					self._middleware.clientSet,

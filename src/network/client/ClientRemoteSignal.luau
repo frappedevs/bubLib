@@ -49,7 +49,7 @@ function ClientRemoteSignal.__index:connect(callback: (...any) -> ()): RBXScript
 			return
 		end
 
-		callback(networkUtil.deserializeAndUnpack(self._remote, args))
+		callback(networkUtil.deserializeAndUnpackArgs(self._remote, args))
 	end))
 
 	return connection
@@ -64,7 +64,7 @@ end
 
 function ClientRemoteSignal.__index:once(callback: (...any) -> ()): RBXScriptConnection
 	return self._trove:Add(self._remote.OnClientEvent:Once(function(args)
-		callback(networkUtil.deserializeAndUnpack(self._remote, args))
+		callback(networkUtil.deserializeAndUnpackArgs(self._remote, args))
 	end))
 end
 

@@ -173,13 +173,14 @@ end
 
 --[=[
 	@tag ClientRemoteProperty instance
+	@tag Deprecated
 	@return Promise<any>
 
 	Works the same as [ClientRemoteProperty:set], but returns a [promise](https://eryn.io/roblox-lua-promise/) which is resolved **when**
 	the server has set the value for the client to `value`, or else rejects with a `nil value`. Additionally, the returned promise 
 	resolves with the value that was set. If this method is called againand the returned promise had not yet finished, then the old 
 	promise returned will be cancelled.
-	
+
 	:::note Precaution
 	This method performs a shallow check (`self:get() == value`) before informing the server to actually
 	set the value. This is an attempt to avoid sending unnecessary requests to the server. For e.g:
@@ -209,6 +210,13 @@ end
 ]=]
 
 function ClientRemoteProperty.__index:setPromise(value: any)
+	warn(
+		string.format(
+			"[ClientRemoteProperty:setPromise] has been deprecated as of 8/29/2024. \n\t%s",
+			debug.traceback()
+		)
+	)
+
 	if self._valueSetPromises[value] ~= nil then
 		self._valueSetPromises[value]:cancel()
 	end
@@ -263,7 +271,7 @@ function ClientRemoteProperty.__index:_init()
 
 	local function setInternalPropertyValue(newValue: any)
 		internalPropertyValueSet = true
-		newValue = networkUtil.deserializeAndUnpack(remoteFunction, newValue)
+		newValue = networkUtil.deserializeAndUnpackArgs(remoteFunction, newValue)
 
 		if typeof(newValue) == "table" and newValue.valueGuiId ~= nil then
 			-- The server returned to us a table containing the value and a gui id,

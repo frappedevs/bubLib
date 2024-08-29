@@ -57,7 +57,7 @@ local function abstractOfNetworkFolder(networkFolder): { [string]: any }
 
 				local promise = Promise.new(function(resolve)
 					resolve(
-						networkUtil.deserializeAndUnpack(
+						networkUtil.deserializeAndUnpackArgs(
 							descendant,
 							descendant:InvokeServer(
 								networkUtil.serializeGivenArgs(descendant, table.unpack(args))
@@ -74,7 +74,7 @@ local function abstractOfNetworkFolder(networkFolder): { [string]: any }
 			end
 		else
 			abstract[descendant.Name] =
-				networkUtil.deserializeAndUnpack(descendant, descendant:InvokeServer())
+				networkUtil.deserializeAndUnpackArgs(descendant, descendant:InvokeServer())
 		end
 	end
 

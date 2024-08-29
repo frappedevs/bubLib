@@ -718,7 +718,7 @@ function NetworkServer.__index:_setup(key, value)
 
 	function remoteFunction.OnServerInvoke(client, serializedArgs)
 		local deserializedArgs =
-			{ networkUtil.deserializeAndUnpack(remoteFunction, serializedArgs) }
+			{ networkUtil.deserializeAndUnpackArgs(remoteFunction, serializedArgs) }
 
 		if typeof(value) == "function" then
 			local methodCallInboundMiddlewareAccumulatedResponses =

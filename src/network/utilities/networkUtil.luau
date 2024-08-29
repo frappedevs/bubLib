@@ -88,7 +88,7 @@ function networkUtil.serializeGivenArgs(remoteInstance, ...)
 	return serializerUtil.serializeTableDeep({ ... })
 end
 
-function networkUtil.deserializeAndUnpack(remoteInstance, serializedArgs): ...any
+function networkUtil.deserializeAndUnpackArgs(remoteInstance, serializedArgs): ...any
 	if
 		not remoteInstance:GetAttribute(
 			sharedEnums.Attribute.AutomaticRemoteArgumentSerializationAndDeserializationEnabled
