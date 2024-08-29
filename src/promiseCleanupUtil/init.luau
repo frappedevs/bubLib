@@ -33,10 +33,10 @@ end
 ]=]
 
 function promiseCleanupUtil.findAndCancelPromise(key: string, cleanupTable: { [string]: any })
-	local targetPromise = cleanupTable.playerCustomAnimatorSetupPromise[key]
+	local targetPromise = cleanupTable[key]
 
 	if targetPromise ~= nil then
-		cleanupTable.playerCustomAnimatorSetupPromise[key] = nil
+		cleanupTable[key] = nil
 		targetPromise:cancel()
 	end
 end

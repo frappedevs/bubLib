@@ -28,7 +28,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [contextActionServiceUtil](https://babypatrick100.github.io/libraries/api/contextActionServiceUtil) | `contextActionServiceUtil = "bubshurb/contextactionserviceutil@1.0.0"` | `shared` |
 | [playerUtil](https://babypatrick100.github.io/libraries/api/playerUtil) | `playerUtil = "bubshurb/playerUtil@1.0.0"` | `shared` |
 | [playerCacheUtil](https://babypatrick100.github.io/libraries/api/playerCacheUtil) | `playerUtil = "bubshurb/playercacheutil@1.1.0"` | `shared` |
-| [promiseCleanupUtil](https://babypatrick100.github.io/libraries/api/promiseCleanupUtil) | `promiseCleanupUtil = "bubshurb/promisecleanuputil@1.2.1"` | `shared` |
+| [promiseCleanupUtil](https://babypatrick100.github.io/libraries/api/promiseCleanupUtil) | `promiseCleanupUtil = "bubshurb/promisecleanuputil@1.2.2"` | `shared` |
 | [playerCharacterUtil](https://babypatrick100.github.io/libraries/api/playerCharacterUtil) | `playerCharacterUtil = "bubshurb/playerCharacterUtil@1.0.0"` | `shared` |
 | [debugLoggerUtil](https://babypatrick100.github.io/libraries/api/debugLoggerUtil) | `debugLoggerUtil = "bubshurb/debugLoggerUtil@1.0.0"` | `shared` |
 | [stringUtil](https://babypatrick100.github.io/libraries/api/stringUtil) | `stringUtil = "bubshurb/stringUtil@1.0.0"` | `shared` |
