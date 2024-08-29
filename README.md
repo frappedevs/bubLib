@@ -20,14 +20,14 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [colorSequenceUtil](https://babypatrick100.github.io/libraries/api/colorSequenceUtil) | `colorSequenceUtil = "bubshurb/colorsequenceutil@1.0.0"` | `shared` |
 | [throttleUtil](https://babypatrick100.github.io/libraries/api/throttleUtil) | `throttleUtil = "bubshurb/throttleutil@1.0.0"` | `shared` |
 | [coreGuiUtil](https://babypatrick100.github.io/libraries/api/coreGuiUtil) | `coreGuiUtil = "bubshurb/coreguiutil@1.1.0"` | `shared` |
-| [playerTroveUtil](https://babypatrick100.github.io/libraries/api/playerTroveUtil) | `playerTroveUtil = "bubshurb/playertroveutil@1.0.0"` | `shared` |
+| [playerTroveUtil](https://babypatrick100.github.io/libraries/api/playerTroveUtil) | `playerTroveUtil = "bubshurb/playertroveutil@1.0.1"` | `shared` |
 | [schedulerUtil](https://babypatrick100.github.io/libraries/api/schedulerUtil) | `schedulerUtil = "bubshurb/schedulerutil@1.2.0"` | `shared` |
 | [guiObjectFadeUtil](https://babypatrick100.github.io/libraries/api/guiObjectFadeUtil) | `guiObjectFadeUtil = "bubshurb/guiobjectfadeutil@1.1.1"` | `shared` |
 | [playerPolicyInfoUtil](https://babypatrick100.github.io/libraries/api/playerPolicyInfoUtil) | `playerPolicyInfoUtil = "bubshurb/playerpolicyinfoutil@1.0.0"` | `shared` |
 | [instanceReplicationUtil](https://babypatrick100.github.io/libraries/api/instanceReplicationUtil) | `instanceReplicationUtil = "bubshurb/instancereplicationutil@1.1.0"` | `shared` |
 | [contextActionServiceUtil](https://babypatrick100.github.io/libraries/api/contextActionServiceUtil) | `contextActionServiceUtil = "bubshurb/contextactionserviceutil@1.0.0"` | `shared` |
 | [playerUtil](https://babypatrick100.github.io/libraries/api/playerUtil) | `playerUtil = "bubshurb/playerUtil@1.0.0"` | `shared` |
-| [playerCacheUtil](https://babypatrick100.github.io/libraries/api/playerCacheUtil) | `playerUtil = "bubshurb/playercacheutil@1.0.0"` | `shared` |
+| [playerCacheUtil](https://babypatrick100.github.io/libraries/api/playerCacheUtil) | `playerUtil = "bubshurb/playercacheutil@1.1.0"` | `shared` |
 | [playerCharacterUtil](https://babypatrick100.github.io/libraries/api/playerCharacterUtil) | `playerCharacterUtil = "bubshurb/playerCharacterUtil@1.0.0"` | `shared` |
 | [debugLoggerUtil](https://babypatrick100.github.io/libraries/api/debugLoggerUtil) | `debugLoggerUtil = "bubshurb/debugLoggerUtil@1.0.0"` | `shared` |
 | [stringUtil](https://babypatrick100.github.io/libraries/api/stringUtil) | `stringUtil = "bubshurb/stringUtil@1.0.0"` | `shared` |
