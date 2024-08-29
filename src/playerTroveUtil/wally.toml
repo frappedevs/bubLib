@@ -1,0 +1,11 @@
+[package]
+name = "bubshurb/playertroveutil"
+description = "An utility module for working with player troves."
+authors = ["bubshurb"]
+license = "MIT"
+version = "1.0.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+Trove = "sleitnick/trove@1"

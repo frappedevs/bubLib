@@ -20,6 +20,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [colorSequenceUtil](https://babypatrick100.github.io/libraries/api/colorSequenceUtil) | `colorSequenceUtil = "bubshurb/colorsequenceutil@1.0.0"` | `shared` |
 | [throttleUtil](https://babypatrick100.github.io/libraries/api/throttleUtil) | `throttleUtil = "bubshurb/throttleutil@1.0.0"` | `shared` |
 | [coreGuiUtil](https://babypatrick100.github.io/libraries/api/coreGuiUtil) | `coreGuiUtil = "bubshurb/coreguiutil@1.1.0"` | `shared` |
+| [playerTroveUtil](https://babypatrick100.github.io/libraries/api/playerTroveUtil) | `playerTroveUtil = "bubshurb/playertroveutil@1.0.0"` | `shared` |
 | [schedulerUtil](https://babypatrick100.github.io/libraries/api/schedulerUtil) | `schedulerUtil = "bubshurb/schedulerutil@1.2.0"` | `shared` |
 | [guiObjectFadeUtil](https://babypatrick100.github.io/libraries/api/guiObjectFadeUtil) | `guiObjectFadeUtil = "bubshurb/guiobjectfadeutil@1.1.1"` | `shared` |
 | [playerPolicyInfoUtil](https://babypatrick100.github.io/libraries/api/playerPolicyInfoUtil) | `playerPolicyInfoUtil = "bubshurb/playerpolicyinfoutil@1.0.0"` | `shared` |
