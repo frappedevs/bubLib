@@ -42,8 +42,8 @@ local playerCacheUtil = {}
 	:::
 
 	:::warning Potential error
-    This method will throw an error if `player` is not present in game.
-    :::
+	This method will throw an error if `player` is not present in game.
+	:::
 ]=]
 
 function playerCacheUtil.cacheForPlayer(player: Player)

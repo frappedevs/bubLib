@@ -14,11 +14,11 @@ local playerTroveUtil = {}
 
 --[=[
 	Returns the given `player`'s trove. If one does not exist, it'll be creatd for the given `player`. This trove
-    will be automatically cleaned up once `player` is destroyed.
+	will be automatically cleaned up once `player` is destroyed.
 
-    :::warning Potential error
-    This method will throw an error if `player` is not present in game.
-    :::
+	:::warning Potential error
+	This method will throw an error if `player` is not present in game.
+	:::
 ]=]
 
 function playerTroveUtil.playerTrove(player: Player)
