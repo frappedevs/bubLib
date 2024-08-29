@@ -34,6 +34,11 @@ function playerTroveUtil.playerTrove(player: Player)
 	local playerTrove = Trove.new()
 	playerTrove:AttachToInstance(player)
 	playerTroves[player] = playerTrove
+
+	playerTrove:Add(function()
+		playerTroves[player] = nil
+	end)
+
 	return playerTrove
 end
 
