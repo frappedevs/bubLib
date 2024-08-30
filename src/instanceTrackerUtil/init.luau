@@ -29,6 +29,7 @@
 ]=]
 
 local Property = require(script.Parent.Property)
+local Connection = require(script.Parent.Connection)
 
 local PROPERTY_TRANSFORMER_MEMBER = "__propertyTransformer"
 
@@ -36,12 +37,6 @@ local cleanupCallbacks = {}
 local trackedInstances = {}
 
 local instanceTrackerUtil = {}
-
-type Bind<T> = {
-	property: Property.Property<any>,
-	transformer: (updatedValue: T, oldValue: T?) -> any?,
-	[string]: true,
-}
 
 local function isTransformerBinder(value)
 	return typeof(value) == "table" and value[PROPERTY_TRANSFORMER_MEMBER] == true
@@ -51,16 +46,15 @@ local function applyTransformedValue(instance, instanceProperty, transformedValu
 	if typeof(transformedValue) == "Instance" and transformedValue:IsA("Tween") then
 		transformedValue:Play()
 
-		return function()
+		return Connection.new(function()
 			transformedValue:Cancel()
-		end
+		end)
 	else
 		if typeof(transformedValue) == "function" then
-			local loopToggle = true
 			local lastValue = nil
 
-			task.spawn(function()
-				while loopToggle do
+			local loopThread = task.defer(function()
+				while true do
 					local newTransformedValue = transformedValue(property:get(), lastValue)
 					lastValue = property:get()
 
@@ -73,9 +67,9 @@ local function applyTransformedValue(instance, instanceProperty, transformedValu
 				end
 			end)
 
-			return function()
-				loopToggle = false
-			end
+			return Connection.new(function()
+				task.cancel(loopThread)
+			end)
 		else
 			instance[instanceProperty] = transformedValue
 		end
@@ -99,7 +93,7 @@ function instanceTrackerUtil.track(
 	instance: Instance,
 	cleanupCallback: ((instance: Instance) -> ())?
 )
-	if cleanupCallback then
+	if cleanupCallback ~= nil then
 		cleanupCallbacks[instance] = cleanupCallback
 	end
 
@@ -111,9 +105,9 @@ end
 	the value of `property` is wrapped onto `transformer`.
 ]=]
 
-function instanceTrackerUtil.bind<T>(
+function instanceTrackerUtil.bind(
 	property: Property.Property,
-	transformer: (newValue: T, oldValue: T?) -> any
+	transformer: (newValue: any, oldValue: any?) -> any
 )
 	return table.freeze({
 		property = property,
@@ -143,10 +137,10 @@ end
 	```
 ]=]
 
-function instanceTrackerUtil.bindToInstanceProperty<T>(
+function instanceTrackerUtil.bindToInstanceProperty(
 	instance: Instance,
 	instanceProperty: string,
-	transformer: (newValue: T, oldValue: T?) -> any
+	transformer: (newValue: any, oldValue: any?) -> any
 )
 	local property = Property.new()
 	property:bindToInstanceProperty(instance, instanceProperty)
@@ -178,14 +172,13 @@ end
 	```
 ]=]
 
-function instanceTrackerUtil.bindToInstanceAttribute<T>(
+function instanceTrackerUtil.bindToInstanceAttribute(
 	instance: Instance,
 	attribute: string,
-	transformer: (newValue: T, oldValue: T?) -> any
+	transformer: (newValue: any, oldValue: any?) -> any
 )
 	local property = Property.new()
 	property:bindToInstanceAttribute(instance, attribute)
-
 	return table.freeze({
 		property = property,
 		transformer = transformer,
@@ -194,6 +187,8 @@ function instanceTrackerUtil.bindToInstanceAttribute<T>(
 end
 
 --[=[ 
+	@return Connection
+	
 	Initializes the given instance with `props`. If properties are specified in `props`, the
 	instance property will be bind to the **value of the property*.
 
@@ -285,12 +280,8 @@ end
 	```
 ]=]
 
-function instanceTrackerUtil.setProps<T>(
-	instance: Instance,
-	props: { [string]: Property.Property | Bind<T> }
-)
-	local initializedInstanceAncestor
-
+function instanceTrackerUtil.setProps(instance: Instance, props: { [string]: any })
+	local initializedInstanceAncestor = nil
 	if typeof(instance) == "Instance" then
 		for initializedInstance in trackedInstances do
 			if instance:IsDescendantOf(initializedInstance) then
@@ -300,11 +291,11 @@ function instanceTrackerUtil.setProps<T>(
 		end
 	end
 
-	initializedInstanceAncestor = if initializedInstanceAncestor
+	initializedInstanceAncestor = if initializedInstanceAncestor ~= nil
 		then trackedInstances[initializedInstanceAncestor]
 		else nil
 
-	local connections = {} :: { [string]: Property.Property }?
+	local connections = {}
 	local transformerCleaner
 
 	for instanceProperty, propertyOrValue in props do
@@ -333,7 +324,7 @@ function instanceTrackerUtil.setProps<T>(
 					return
 				end
 
-				if transformerCleaner then
+				if transformerCleaner ~= nil then
 					transformerCleaner()
 				end
 
@@ -346,8 +337,7 @@ function instanceTrackerUtil.setProps<T>(
 			end)
 
 			table.insert(connections, onUpdateConnection)
-
-			if initializedInstanceAncestor then
+			if initializedInstanceAncestor ~= nil then
 				table.insert(initializedInstanceAncestor.propConnections, onUpdateConnection)
 			end
 		else
@@ -361,7 +351,7 @@ function instanceTrackerUtil.setProps<T>(
 				end)
 
 				table.insert(connections, onUpdateConnection)
-				if initializedInstanceAncestor then
+				if initializedInstanceAncestor ~= nil then
 					table.insert(initializedInstanceAncestor.propConnections, onUpdateConnection)
 				end
 			else
@@ -370,18 +360,18 @@ function instanceTrackerUtil.setProps<T>(
 		end
 	end
 
-	return function()
+	return Connection.new(function()
 		for _, connection in connections do
-			if initializedInstanceAncestor then
-				local index = table.find(initializedInstanceAncestor.propConnections, connection)
-				if index then
-					table.remove(initializedInstanceAncestor.propConnections, index)
-				end
+			if initializedInstanceAncestor ~= nil then
+				table.remove(
+					initializedInstanceAncestor.propConnections,
+					table.find(initializedInstanceAncestor.propConnections, connection)
+				)
 			end
 
 			connection:Disconnect()
 		end
-	end
+	end)
 end
 
 --[=[ 
@@ -421,19 +411,15 @@ function instanceTrackerUtil.untrack(instance: Instance)
 	local cleanupCallback = cleanupCallbacks[instance]
 	local trackedInstance = trackedInstances[instance]
 
-	if cleanupCallback then
+	if cleanupCallback ~= nil then
 		task.spawn(cleanupCallback, instance)
 	end
 
-	task.defer(function()
-		if trackedInstance then
-			for _, connection in trackedInstance.propConnections do
-				connection:Disconnect()
-			end
-
-			trackedInstance.propConnections = nil
+	if trackedInstance ~= nil then
+		for _, connection in trackedInstance.propConnections do
+			connection:Disconnect()
 		end
-	end)
+	end
 
 	trackedInstances[instance] = nil
 	cleanupCallbacks[instance] = nil
