@@ -32,10 +32,9 @@
     end)
     ```
 
-    :::note Possible deprecation
-    This module is superseded by [StreamingEnabled](https://create.roblox.com/docs/workspace/streaming) (if used properly) 
-    - you can set the `ModelStreamingMode` of models to `Atomic` to ensure all their descendants are loaded once the main model
-    is loaded into the client.
+    :::warning Superseded by Streaming Enabled
+    This module is superseded by [StreamingEnabled](https://create.roblox.com/docs/workspace/streaming) and has therefore being deprecated as of 8/30/2024:
+        - You can set the `ModelStreamingMode` of models to `Atomic` to ensure all their descendants are loaded once the main model is loaded into the client.
     :::
 ]=]
 
@@ -133,10 +132,12 @@ function instanceReplicationUtil.instanceSnaphot(instance: Instance)
 	assert(RunService:IsClient(), "Can only wait for the instance's snapshot on the client!")
 
 	return Promise.new(function(resolve)
-		local minimumRequiredInstanceDescendants = instance:GetAttribute(INSTANCE_DESCENDANTS_COUNT_ATTRIBUTE)
+		local minimumRequiredInstanceDescendants =
+			instance:GetAttribute(INSTANCE_DESCENDANTS_COUNT_ATTRIBUTE)
 		if minimumRequiredInstanceDescendants == nil then
 			instance:GetAttributeChangedSignal(INSTANCE_DESCENDANTS_COUNT_ATTRIBUTE):Wait()
-			minimumRequiredInstanceDescendants = instance:GetAttribute(INSTANCE_DESCENDANTS_COUNT_ATTRIBUTE)
+			minimumRequiredInstanceDescendants =
+				instance:GetAttribute(INSTANCE_DESCENDANTS_COUNT_ATTRIBUTE)
 		end
 
 		local validDescendantsCount = validDescendantsCount(instance)
@@ -162,5 +163,11 @@ function instanceReplicationUtil.instanceSnaphot(instance: Instance)
 		end
 	end)
 end
+
+warn(
+	string.format(
+		"instanceReplicationUtil has been superseded by `Workspace.StreamingEnabled` and has therefore being deprecated as of 8/30/2024!"
+	)
+)
 
 return table.freeze(instanceReplicationUtil)

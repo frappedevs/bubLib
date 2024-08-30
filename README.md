@@ -25,7 +25,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [schedulerUtil](https://babypatrick100.github.io/libraries/api/schedulerUtil) | `schedulerUtil = "bubshurb/schedulerutil@1.3.0"` | `shared` |
 | [guiObjectFadeUtil](https://babypatrick100.github.io/libraries/api/guiObjectFadeUtil) | `guiObjectFadeUtil = "bubshurb/guiobjectfadeutil@1.1.1"` | `shared` |
 | [playerPolicyInfoUtil](https://babypatrick100.github.io/libraries/api/playerPolicyInfoUtil) | `playerPolicyInfoUtil = "bubshurb/playerpolicyinfoutil@1.0.0"` | `shared` |
-| [instanceReplicationUtil](https://babypatrick100.github.io/libraries/api/instanceReplicationUtil) | `instanceReplicationUtil = "bubshurb/instancereplicationutil@1.1.0"` | `shared` |
+| [instanceReplicationUtil](https://babypatrick100.github.io/libraries/api/instanceReplicationUtil) | `instanceReplicationUtil = "bubshurb/instancereplicationutil@1.2.0"` | `shared` |
 | [contextActionServiceUtil](https://babypatrick100.github.io/libraries/api/contextActionServiceUtil) | `contextActionServiceUtil = "bubshurb/contextactionserviceutil@1.0.0"` | `shared` |
 | [playerUtil](https://babypatrick100.github.io/libraries/api/playerUtil) | `playerUtil = "bubshurb/playerUtil@1.0.0"` | `shared` |
 | [playerCacheUtil](https://babypatrick100.github.io/libraries/api/playerCacheUtil) | `playerUtil = "bubshurb/playercacheutil@1.1.0"` | `shared` |
