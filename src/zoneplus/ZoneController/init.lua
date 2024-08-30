@@ -1,3 +1,4 @@
+-- #selene: allow(unused_variable)
 -- CONFIG
 local WHOLE_BODY_DETECTION_LIMIT = 729000 -- This is roughly the volume where Region3 checks begin to exceed 0.5% in Script Performance
 

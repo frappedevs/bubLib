@@ -1,3 +1,4 @@
+-- #selene: allow(unused_variable)
 -- This enables data on volumes, HumanoidRootParts, etc to be handled on an event-basis, instead of being retrieved every interval
 
 -- LOCAL
