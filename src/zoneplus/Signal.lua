@@ -1,4 +1,5 @@
 -- #selene: allow(unused_variable)
+-- #selene: allow(incorrect_standard_library_use)
 
 --------------------------------------------------------------------------------
 --               Batched Yield-Safe Signal Implementation                     --
