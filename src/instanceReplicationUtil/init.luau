@@ -166,7 +166,8 @@ end
 
 warn(
 	string.format(
-		"instanceReplicationUtil has been superseded by `Workspace.StreamingEnabled` and has therefore being deprecated as of 8/30/2024!"
+		"instanceReplicationUtil has been superseded by `Workspace.StreamingEnabled` and has therefore being deprecated as of 8/30/2024! \n\t%s",
+		debug.traceback()
 	)
 )
 
