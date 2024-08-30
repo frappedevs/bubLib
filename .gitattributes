@@ -1,6 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Add .luau files to be highlighted as .lua files
-*.luau linguist-language=Lua
-* text eol=crlf
+# Declare files that will always have CRLF line endings on checkout.
+*.sln text eol=crlf
