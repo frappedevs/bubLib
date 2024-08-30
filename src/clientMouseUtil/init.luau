@@ -7,6 +7,7 @@
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
+local Connection = require(script.Parent.Connection)
 local schedulerUtil = require(script.Parent.schedulerUtil)
 
 local DEFAULT_MAX_ACTIVATION_DISTANCE = 500
@@ -17,23 +18,15 @@ local mouse3DHoverEndCallbacks = {}
 
 local clientMouseUtil = {}
 
-type Connection = { Disconnect: () -> () }
-
 local function mousePositionRayResult(position: Vector2)
 	local unitRay = Workspace.CurrentCamera:ViewportPointToRay(position.X, position.Y)
 	return Workspace:Raycast(unitRay.Origin, unitRay.Direction * DEFAULT_MAX_ACTIVATION_DISTANCE),
 		unitRay
 end
 
-local function connection(callbacks, value)
-	return table.freeze({
-		Disconnect = function()
-			table.remove(callbacks, table.find(callbacks, value))
-		end,
-	})
-end
-
 --[=[ 
+	@return Connection
+
     Registers the given callback which is called whenever the player hovers over a 3D instance.
 ]=]
 
@@ -44,7 +37,7 @@ function clientMouseUtil.registerMouseHoverStart(
 	) -> (),
 	minActivationDistance: number?,
 	maxActivationDistance: number?
-): Connection
+): Connection.Connection
 	local callbackData = {
 		callback = callback,
 		maxActivationDistance = math.min(
@@ -54,20 +47,22 @@ function clientMouseUtil.registerMouseHoverStart(
 		minActivationDistance = minActivationDistance or 0,
 	}
 	table.insert(mouse3DHoverStartCallbacks, callbackData)
-	return connection(mouse3DHoverStartCallbacks, callbackData)
+	return Connection.new(mouse3DHoverStartCallbacks, callbackData)
 end
 
 --[=[ 
+	@return Connection
+	
     Registers the given callback which is called whenever the player no longer over a 3D instance.
 ]=]
 
 function clientMouseUtil.registerMouseHoverEnd(callback: (
 	instance: Instance,
 	mousePosition: Vector2
-) -> ()): Connection
+) -> ()): Connection.Connection
 	local callbackData = { callback = callback, lastInstance = nil }
 	table.insert(mouse3DHoverEndCallbacks, callbackData)
-	return connection(mouse3DHoverEndCallbacks, callbackData)
+	return Connection.new(mouse3DHoverEndCallbacks, callbackData)
 end
 
 schedulerUtil.schedule(
