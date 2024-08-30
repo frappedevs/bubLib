@@ -311,6 +311,7 @@ local Workspace = game:GetService("Workspace")
 
 local sharedEnums = require(script.Parent.Parent.sharedEnums)
 local Trove = require(script.Parent.Parent.Parent.Trove)
+local Connection = require(script.Parent.Parent.Parent.Connection)
 local Signal = require(script.Parent.Parent.Parent.Signal)
 local Property = require(script.Parent.Parent.Parent.Property)
 local Sift = require(script.Parent.Parent.Parent.Sift)
@@ -348,22 +349,6 @@ local RemoteProperty = {
 	ClientSetRequestValidator = ClientSetRequestValidator,
 	__index = {},
 }
-
-type Connection = {
-	Connected: boolean,
-	Disconnect: (self: Connection) -> (),
-}
-
-local function connection(cleanupCallback)
-	return {
-		Disconnect = function(self)
-			cleanupCallback()
-			self.Connected = false
-		end,
-
-		Connected = true,
-	}
-end
 
 --[=[
 	@param remotePropertyConfig RemotePropertyConfig?
@@ -753,10 +738,10 @@ function RemoteProperty.__index:observeClientsValue(observer: (
 	player: Player,
 	newValue: any,
 	oldValue: any?
-) -> ()): Connection
+) -> ()): Connection.Connection
 	table.insert(self._clientsValueObservers, observer)
 
-	return connection(function()
+	return Connection.new(function()
 		table.remove(self._clientsValueObservers, table.find(self._clientsValueObservers, observer))
 	end)
 end
