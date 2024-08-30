@@ -4,7 +4,7 @@ name = "bubshurb/playerhumanoidutil"
 description = "A simple utility module for working with the player's humanoid."
 authors = ["bubshurb"]
 license = "MIT"
-version = "1.1.0"
+version = "1.2.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
@@ -14,3 +14,4 @@ Signal = "sleitnick/signal@2"
 Connection = "bubshurb/connection@1"
 instanceUtil = "bubshurb/instanceutil@1"
 playerEventsUtil = "bubshurb/playereventsutil@1"
+playerTroveUtil = "bubshurb/playertroveutil@1"

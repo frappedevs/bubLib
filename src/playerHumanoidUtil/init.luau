@@ -11,28 +11,53 @@ local Promise = require(script.Parent.Promise)
 local Signal = require(script.Parent.Signal)
 local Connection = require(script.Parent.Connection)
 local instanceUtil = require(script.Parent.instanceUtil)
+local playerTroveUtil = require(script.Parent.playerTroveUtil)
 local playerEventsUtil = require(script.Parent.playerEventsUtil)
 
 local playerHumanoidUtil = {}
 
+local function kickHumanoidOutOfSeatPromise(targetHumanoid: Humanoid)
+	targetHumanoid.Sit = false
+
+	return Promise.fromEvent(targetHumanoid:GetPropertyChangedSignal("SeatPart"), function()
+		return targetHumanoid.SeatPart == nil
+	end)
+end
+
 --[=[ 
-	Attempts to return the given `player`'s character's humanoid, if found.
+	Attempts to return the given `player`'s humanoid, if found. This method is sugar for:
+
+	```lua
+	local function playerHumanoid(player: Player)
+		return if player.Character ~= nil then 
+			player.Character:FindFirstChildWhichIsA("Humanoid") 
+		else 
+			nil
+	end
+	```
 ]=]
 
 function playerHumanoidUtil.playerHumanoid(player: Player): Humanoid?
-	return if player.Character then player.Character:FindFirstChildWhichIsA("Humanoid") else nil
+	return if player.Character ~= nil
+		then player.Character:FindFirstChildWhichIsA("Humanoid")
+		else nil
 end
 
 --[=[ 
 	Promisfied verison of [playerHumanoidUtil.playerHumanoid].
+
+	:::note Automatic promise cancellation
+	The returned promise will be cancelled automatically once `player` is no longer in game!
+	:::
 
 	@return Promise<Humanoid>
 ]=]
 
 function playerHumanoidUtil.playerHumanoidPromise(player: Player)
 	local connections = {}
+	local playerTrove = playerTroveUtil.playerTrove(player)
 
-	local thisPlayerHumanoidPromise = Promise.new(function(resolve)
+	local thisPlayerHumanoidPromise = playerTrove:AddPromise(Promise.new(function(resolve)
 		local playerHumanoid = playerHumanoidUtil.playerHumanoid(player)
 		if playerHumanoid ~= nil then
 			resolve(playerHumanoid)
@@ -66,7 +91,7 @@ function playerHumanoidUtil.playerHumanoidPromise(player: Player)
 		Promise.fromEvent(onPlayerHumanoidRetrievedSignal):expect()
 		onPlayerHumanoidRetrievedSignal:Destroy()
 		resolve(playerHumanoid)
-	end)
+	end))
 
 	thisPlayerHumanoidPromise:finally(function()
 		for _, connection in connections do
@@ -77,29 +102,120 @@ function playerHumanoidUtil.playerHumanoidPromise(player: Player)
 	return thisPlayerHumanoidPromise
 end
 
---[=[ 
-   Attempts the seat the `given` player in `seat` if `seat.Occupant` = `nil`. Handles an edgecase
-   where [seat:Sit](https://create.roblox.com/docs/reference/engine/classes/Seat#Sit) does not work
-   if given humanoid was seated, by unsitting the humanoid through  `humanoid.Sit = false` and then seating the humanoid.
+--[=[
+	@return Promise<Seat | VehicleSeat>
+
+	Attempts to seat the given `player`'s humanoid to `seat`. Additionally, if the `player`'s humanoid is already seated on some *other* seat,
+	then the humanoid will be unseated through `humanoid.Sit = false` before being seated to `seat`.
+
+	:::warning
+	- This method will throw an error if `player` is not preset in game.
+	
+	- On the client, this method will throw an error if `player` is not the local player.
+
+	- If the given `seat` already has an `Occupant` which is not the `player`'s humanoid, then the returned promise
+	will reject.
+	:::
+
+	:::note Automatic promise cancellation
+	The returned promise will be cancelled automatically once `player` is no longer in game!
+	:::
 ]=]
 
-function playerHumanoidUtil.seatPlayer(player: Player, seat: VehicleSeat | Seat)
+function playerHumanoidUtil.trySeatPlayerPromise(player: Player, seat: VehicleSeat | Seat)
 	if RunService:IsClient() then
-		assert(player == Players.LocalPlayer, "Can only seat local player to a seat")
+		assert(player == Players.LocalPlayer, "Can only seat local player to a seat!")
 	end
 
-	local humanoid = playerHumanoidUtil.playerHumanoid(player)
+	assert(player:IsDescendantOf(Players), "Player must be in game!")
 
-	if humanoid ~= nil and seat.Occupant == nil then
-		if humanoid.SeatPart ~= nil then
-			humanoid.Sit = false
-			humanoid:GetPropertyChangedSignal("SeatPart"):Once(function()
-				seat:Sit(humanoid)
+	local playerTrove = playerTroveUtil.playerTrove(player)
+	return playerTrove:AddPromise(Promise.new(function(resolve, reject, onCancel)
+		local humanoid = playerHumanoidUtil.playerHumanoidPromise(player):expect()
+
+		if seat.Occupant ~= nil then
+			if seat.Occupant == humanoid then
+				resolve(seat)
+			else
+				reject(string.format("Seat [%s] already has an occupant!", seat:GetFullName()))
+				return
+			end
+		end
+
+		if humanoid.SeatPart ~= nil and humanoid.SeatPart ~= seat then
+			local kickTargetHumanoidOutOfSeatPromise = kickHumanoidOutOfSeatPromise(humanoid)
+			onCancel(function()
+				kickTargetHumanoidOutOfSeatPromise:cancel()
 			end)
-		else
+			kickTargetHumanoidOutOfSeatPromise:expect()
+		end
+
+		if humanoid.SeatPart ~= seat then
 			seat:Sit(humanoid)
 		end
+
+		resolve(seat)
+	end))
+end
+
+--[=[
+	@return Promise<Seat | VehicleSeat>
+
+	Works almost exactly the same as [playerHumanoidUtil.trySeatPlayerPromise], but unlike the former method, this method
+	will try to unseat the `seat`'s occupant (if any) through `humanoid.Sit = false`.
+
+	:::warning
+	- This method will throw an error if `player` is not preset in game.
+	
+	- On the client, this method will throw an error if `player` is not the local player.
+
+	- If the given `seat` already has an `Occupant` which is not the `player`'s humanoid, then the returned promise
+	will reject.
+	:::
+
+	:::note Automatic promise cancellation
+	The returned promise will be cancelled automatically once `player` is no longer in game!
+	:::
+]=]
+
+function playerHumanoidUtil.forceSeatPlayerPromise(player: Player, seat: VehicleSeat | Seat)
+	if RunService:IsClient() then
+		assert(player == Players.LocalPlayer, "Can only seat local player to a seat!")
 	end
+
+	assert(player:IsDescendantOf(Players), "Player must be in game!")
+
+	local playerTrove = playerTroveUtil.playerTrove(player)
+	return playerTrove:AddPromise(Promise.new(function(resolve, reject, onCancel)
+		local humanoid = playerHumanoidUtil.playerHumanoidPromise(player):expect()
+
+		if seat.Occupant ~= nil then
+			if seat.Occupant == humanoid then
+				resolve(seat)
+			else
+				local kickTargetHumanoidOutOfSeatPromise =
+					kickHumanoidOutOfSeatPromise(seat.Occupant)
+				onCancel(function()
+					kickTargetHumanoidOutOfSeatPromise:cancel()
+				end)
+				kickTargetHumanoidOutOfSeatPromise:expect()
+			end
+		end
+
+		if humanoid.SeatPart ~= nil and humanoid.SeatPart ~= seat then
+			local kickTargetHumanoidOutOfSeatPromise = kickHumanoidOutOfSeatPromise(humanoid)
+			onCancel(function()
+				kickTargetHumanoidOutOfSeatPromise:cancel()
+			end)
+			kickTargetHumanoidOutOfSeatPromise:expect()
+		end
+
+		if humanoid.SeatPart ~= seat then
+			seat:Sit(humanoid)
+		end
+
+		resolve(seat)
+	end))
 end
 
 --[=[ 
@@ -115,8 +231,8 @@ end
 	end)
 	```
 
-	While you can simply listen to [humanoid.SeatPart](https://create.roblox.com/docs/reference/engine/classes/Humanoid#SeatPart), 
-	this method accounts for new player character reloading.
+	Observes the given `player`'s `humanoid.SeatPart`, but also accounting for cases where the `player`'s humanoid has not being
+	loaded yet or if the `player`'s humanoid is updated (for e.g on character respawn).
 ]=]
 
 function playerHumanoidUtil.playerHumanoidSeatPartObserver(
@@ -129,7 +245,7 @@ function playerHumanoidUtil.playerHumanoidSeatPartObserver(
 		newSeatPlayerIsNoLongerSittingOn: (Seat | VehicleSeat)?,
 		oldSeatPlayerWasNoLongerSittingOn: (Seat | VehicleSeat)?
 	) -> ())?
-): () -> ()
+): Connection.Connection
 	assert(
 		observerSeated ~= nil or observerUnseated ~= nil,
 		"`observerSeated` and `observerUnseated`: one of them must be specified!"
