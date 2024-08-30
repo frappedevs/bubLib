@@ -33,7 +33,7 @@ end
 	= `nil`).
 
 	```lua
-	playerEventsUtil.usePlayerCharacterAdded(player, function(newCharacter, oldCharacter)
+	playerEventsUtil.usePlayerCharacterAdded(player, function(newCharacter)
 		
 	end)
 	```
@@ -41,19 +41,14 @@ end
 
 function playerEventsUtil.usePlayerCharacterAdded(
 	player: Player,
-	callback: (
-		newPlayerCharacter: Model,
-		oldPlayerCharacter: Model?
-	) -> ()
+	callback: (newPlayerCharacter: Model) -> ()
 )
-	local oldCharacter = player.Character
-	if oldCharacter then
-		task.spawn(callback, oldCharacter, nil)
+	if player.Character ~= nil then
+		task.spawn(callback, player.Character)
 	end
 
 	return player.CharacterAdded:Connect(function(newCharacter)
-		callback(newCharacter, oldCharacter)
-		oldCharacter = newCharacter
+		callback(newCharacter)
 	end)
 end
 
