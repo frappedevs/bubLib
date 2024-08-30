@@ -362,12 +362,22 @@ function toolUtil.observePlayerForToolOwnership(
 	table.insert(
 		connections,
 		playerEventsUtil.usePlayerCharacterAdded(player, function(newPlayerCharacter)
+			-- EDGECASE: `player.Character.ChildRemoving` does not fire if the player's
+			-- character is reloaded, so we'll manually have to flush out old tools marked
+			-- for ownership!
+			for tool in toolsOwnershipObserved do
+				-- If the tool's parent is not a backpack, then we like to make the assumption
+				-- that it'll be the old player's character.
+				if not tool.Parent:IsA("Backpack") then
+					characterChildRemoved(tool)
+				end
+			end
+
+			table.insert(connections, newPlayerCharacter.ChildAdded:Connect(characterChildAdded))
 			table.insert(
 				connections,
 				newPlayerCharacter.ChildRemoved:Connect(characterChildRemoved)
 			)
-
-			table.insert(connections, newPlayerCharacter.ChildAdded:Connect(characterChildAdded))
 
 			for _, child in newPlayerCharacter:GetChildren() do
 				task.spawn(characterChildAdded, child)
