@@ -8,36 +8,29 @@ local Players = game:GetService("Players")
 
 local Promise = require(script.Parent.Promise)
 
-local DEFAULT_RETRY_TIMES = 3
-
 local nameFromUserIdCache = {}
 local userIdFromNameCache = {}
 
 local playersUtil = {}
 
 --[=[ 
-	Returns a promise which is based off of [Promise.retry](https://eryn.io/roblox-lua-promise/api/Promise#retry), wrapped over
-	[Players:GetUserThumbnailAsync](https://create.roblox.com/docs/reference/engine/classes/Players#GetUserThumbnailAsync). 
+	Returns a [promise](https://eryn.io/roblox-lua-promise/) wrapped over [Players:GetUserThumbnailAsync](https://create.roblox.com/docs/reference/engine/classes/Players#GetUserThumbnailAsync). 
 
-	The returned promise will retry upto `retryTimes` (or `3` times, if `retryTimes` is not specified).
+	@return Promise<string>
 ]=]
 
 function playersUtil.playerThumbnailPromise(
 	userId: number,
 	thumbnailType: Enum.ThumbnailType,
-	thumbnailSize: Enum.ThumbnailSize,
-	retryTimes: number?
+	thumbnailSize: Enum.ThumbnailSize
 )
-	return Promise.retry(function(userId, thumbnailType, thumbnailSize)
-		return Promise.new(function(resolve)
-			local content, isReady =
-				Players:GetUserThumbnailAsync(userId, thumbnailType, thumbnailSize)
+	return Promise.new(function(resolve)
+		local content, isReady = Players:GetUserThumbnailAsync(userId, thumbnailType, thumbnailSize)
 
-			if isReady then
-				resolve(content)
-			end
-		end)
-	end, retryTimes or DEFAULT_RETRY_TIMES, userId, thumbnailType, thumbnailSize)
+		if isReady then
+			resolve(content)
+		end
+	end)
 end
 
 --[=[ 
