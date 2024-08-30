@@ -18,7 +18,7 @@ local cachePerPlayer = {}
 local playerCacheUtil = {}
 
 --[=[
-	Returns the cache for the given player. 
+	Returns the cache for the given player, which is automatically cleaned up once `player` leaves the game.
 	
 	:::tip Uniqueness
 	Player caches are stored per each player, uniquely keyed by script names. This means a player's cache 
