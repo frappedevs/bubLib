@@ -1,5 +1,3 @@
-local DEFAULT_NUMBER_EPSLION = 1e-2
-
 --[=[
     @within numberUtil
     
@@ -12,6 +10,8 @@ local DEFAULT_NUMBER_EPSLION = 1e-2
 
     - If `eplison` is not specified, then it will default to `1e-2`.
 ]=]
+
+local DEFAULT_NUMBER_EPSLION = 1e-2
 
 local function close(number: number, to: number, eplison: number?): boolean
 	return math.abs(number - to) <= (eplison or DEFAULT_NUMBER_EPSLION)

@@ -9,8 +9,8 @@
     ```
 ]=]
 
-local function root(number: number, root: number): number
-	return number ^ (1 / root)
+local function root(number: number, numberRoot: number): number
+	return number ^ (1 / numberRoot)
 end
 
 return root

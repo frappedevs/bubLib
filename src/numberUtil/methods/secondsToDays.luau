@@ -1,5 +1,3 @@
-local SECONDS_IN_DAY = 24 * 3600
-
 --[=[
     @within numberUtil
 
@@ -9,6 +7,8 @@ local SECONDS_IN_DAY = 24 * 3600
     print(numberUtil.secondsToDays(86400)) --> 1
     ```
 ]=]
+
+local SECONDS_IN_DAY = 24 * 3600
 
 local function secondsToDays(seconds: number): number
 	return seconds / SECONDS_IN_DAY

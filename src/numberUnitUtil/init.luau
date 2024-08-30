@@ -1,3 +1,6 @@
+-- #selene: allow(unused_variable)
+-- #selene: allow(manual_table_clone)
+
 --[=[ 
     @class numberUnitUtil
 

@@ -1,3 +1,5 @@
+-- #selene: allow(incorrect_standard_library_use)
+
 return {
 	run = function(serializedPathwayPoint)
 		local components = serializedPathwayPoint.components

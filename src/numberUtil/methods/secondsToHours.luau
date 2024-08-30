@@ -1,5 +1,3 @@
-local SECONDS_IN_HOUR = 3600
-
 --[=[
     @within numberUtil
   
@@ -9,6 +7,8 @@ local SECONDS_IN_HOUR = 3600
     print(numberUtil.secondsToHours(3600)) --> 1
     ```
 ]=]
+
+local SECONDS_IN_HOUR = 3600
 
 local function secondsToHours(seconds: number): number
 	return seconds / SECONDS_IN_HOUR

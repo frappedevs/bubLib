@@ -1,5 +1,3 @@
-local factorial = require(script.Parent.factorial)
-
 --[=[
     @within numberUtil
     
@@ -13,6 +11,8 @@ local factorial = require(script.Parent.factorial)
     print(numberUtil.comb(2, 1)) --> 2
     ```
 ]=]
+
+local factorial = require(script.Parent.factorial)
 
 local function comb(number: number, k: number): number
 	if k > number then

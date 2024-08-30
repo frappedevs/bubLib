@@ -17,21 +17,21 @@ local function mode(...: number): number?
 		modes[number] += 1
 	end
 
-	local mode
+	local modeNumber = nil
 	local maxCount = 0
 
 	for number, count in modes do
 		if count > maxCount then
-			mode = number
+			modeNumber = number
 			maxCount = count
 		end
 	end
 
-	if modes[mode] == 1 then
+	if modes[modeNumber] == 1 then
 		return nil
 	end
 
-	return mode
+	return modeNumber
 end
 
 return mode
