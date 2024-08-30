@@ -5,7 +5,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | Module | Dependency | Realm |
 | -- | -- | -- |
 | [ViewportModel](https://babypatrick100.github.io/libraries/api/ViewportModel) | `ViewportModel = "bubshurb/viewportmodel@1.1.0` | `shared` |
-| [ZonePlus](https://babypatrick100.github.io/libraries/api/ZonePlus) | `ZonePlus = "bubshurb/zoneplus@1.1.0` | `shared` |
+| [ZonePlus](https://babypatrick100.github.io/libraries/api/ZonePlus) | `ZonePlus = "bubshurb/zoneplus@1.1.1` | `shared` |
 | [Connection](https://babypatrick100.github.io/libraries/api/Connection) | `Connection = "bubshurb/connection@1.0.0` | `shared` |
 | [Matcher](https://babypatrick100.github.io/libraries/api/Matcher) | `Matcher = "bubshurb/matcher@1.0.0` | `shared` |
 | [Component](https://babypatrick100.github.io/libraries/api/Component) | `Component = "bubshurb/component@1.1.1` | `shared` |
@@ -13,7 +13,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [ContentProviderQueue](https://babypatrick100.github.io/libraries/api/ContentProviderQueue) | `ContentProviderQueue = "bubshurb/contentproviderqueue@1.1.0"` | `shared` |
 | [CustomAnimator](https://babypatrick100.github.io/libraries/api/CustomAnimator) | `CustomAnimator = "bubshurb/customanimator@1.3.0"` | `shared` |
 | [Property](https://babypatrick100.github.io/libraries/api/Property) | `Property = "bubshurb/property@2.4.0"` | `shared` |
-| [network](https://babypatrick100.github.io/libraries/api/network) | `network = "bubshurb/network@2.4.0"` | `shared` |
+| [network](https://babypatrick100.github.io/libraries/api/network) | `network = "bubshurb/network@2.4.1"` | `shared` |
 | [windLines](https://babypatrick100.github.io/libraries/api/windLines) | `windLines = "bubshurb/windlines@1.0.0"` | `shared` |
 | [matrixUtil](https://babypatrick100.github.io/libraries/api/matrixUtil) | `matrixUtil = "bubshurb/matrixutil@1.0.0"` | `shared` |
 | [instanceUtil](https://babypatrick100.github.io/libraries/api/InstanceUtil) | `instanceUtil = "bubshurb/instanceutil@1.1.0"` | `shared` |
@@ -39,7 +39,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [soundUtil](https://babypatrick100.github.io/libraries/api/soundUtil) | `soundUtil = "bubshurb/soundutil@1.2.0"` | `shared` |
 | [badgeServiceUtil](https://babypatrick100.github.io/libraries/api/badgeServiceUtil) | `badgeServiceUtil = "bubshurb/badgeserviceutil@1.1.0"` | `shared` |
 | [colorUtil](https://babypatrick100.github.io/libraries/api/colorUtil) | `colorUtil = "bubshurb/colorutil@1.1.2"` | `shared` |
-| [serializerUtil](https://babypatrick100.github.io/libraries/api/serializerUtil) | `serializerUtil = "bubshurb/serializerutil@1.0.0"` | `shared` |
+| [serializerUtil](https://babypatrick100.github.io/libraries/api/serializerUtil) | `serializerUtil = "bubshurb/serializerutil@1.1.0"` | `shared` |
 | [instanceTrackerUtil](https://babypatrick100.github.io/libraries/api/instanceTrackerUtil) | `instanceTrackerUtil = "bubshurb/instancetrackerutil@1.2.1"` | `shared` |
 | [instanceAttributeUtil](https://babypatrick100.github.io/libraries/api/instanceAttributeUtil) | `instanceAttributeUtil = "bubshurb/instanceattributeutil@1.2.0"` | `shared` |
 | [instanceTagUtil](https://babypatrick100.github.io/libraries/api/instanceTagUtil) | `instanceTagUtil = "bubshurb/instancetagutil@1.0.2"` | `shared` |
