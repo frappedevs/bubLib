@@ -1,10 +1,7 @@
 local AXES = {
-	Enum.Axis.Back.Name,
-	Enum.Axis.Front.Name,
-	Enum.Axis.Top.Name,
-	Enum.Axis.Bottom.Name,
-	Enum.Axis.Left.Name,
-	Enum.Axis.Right.Name,
+	Enum.Axis.X.Name,
+	Enum.Axis.Y.Name,
+	Enum.Axis.Z.Name,
 }
 
 return {
@@ -12,7 +9,7 @@ return {
 		intermediateSerializedData.components = {}
 
 		for _, axesName in AXES do
-			if not axes[axesName] then
+			if axes[axesName] == nil then
 				continue
 			end
 

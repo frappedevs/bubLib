@@ -1,3 +1,4 @@
+-- #selene: allow(unused_variable)
 --[=[ 
     @class numberUtil
 

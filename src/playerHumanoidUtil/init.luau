@@ -187,7 +187,7 @@ function playerHumanoidUtil.forceSeatPlayerPromise(player: Player, seat: Vehicle
 	assert(player:IsDescendantOf(Players), "Player must be in game!")
 
 	local playerTrove = playerTroveUtil.playerTrove(player)
-	return playerTrove:AddPromise(Promise.new(function(resolve, reject, onCancel)
+	return playerTrove:AddPromise(Promise.new(function(resolve, onCancel)
 		local humanoid = playerHumanoidUtil.playerHumanoidPromise(player):expect()
 
 		if seat.Occupant ~= nil then
@@ -256,7 +256,7 @@ function playerHumanoidUtil.playerHumanoidSeatPartObserver(
 
 	table.insert(
 		connections,
-		playerEventsUtil.usePlayerCharacterAdded(player, function(newCharacter)
+		playerEventsUtil.usePlayerCharacterAdded(player, function()
 			if lastHumanoidRetrievalPromise ~= nil then
 				lastHumanoidRetrievalPromise:cancel()
 			end
