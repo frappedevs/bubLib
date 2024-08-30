@@ -7,10 +7,13 @@
 local CollectionService = game:GetService("CollectionService")
 
 local Promise = require(script.Parent.Promise)
+local Connection = require(script.Parent.Connection)
 
 local instanceTagUtil = {}
 
 --[=[
+	@return Connection
+	
 	Observes the given [CollectionService](https://create.roblox.com/docs/reference/engine/classes/CollectionService) tag.
 	`callbackAdded` will be automatically called on all instances with the given tag, and `callbackRemoved` (if specified)
 	will be automatically called on an instance whenever it *no longer* has the given tag.
@@ -38,13 +41,13 @@ function instanceTagUtil.observe(
 		if callbackRemoved ~= nil
 			then CollectionService:GetInstanceRemovedSignal(tag):Connect(callbackRemoved)
 			else nil,
-	} :: { RBXScriptConnection }?
+	}
 
-	return function()
+	return Connection.new(function()
 		for _, connection in connections do
 			connection:Disconnect()
 		end
-	end
+	end)
 end
 
 --[=[
