@@ -138,8 +138,9 @@ function playerHumanoidUtil.trySeatPlayerPromise(player: Player, seat: VehicleSe
 				resolve(seat)
 			else
 				reject(string.format("Seat [%s] already has an occupant!", seat:GetFullName()))
-				return
 			end
+
+			return
 		end
 
 		if humanoid.SeatPart ~= nil and humanoid.SeatPart ~= seat then
@@ -192,6 +193,7 @@ function playerHumanoidUtil.forceSeatPlayerPromise(player: Player, seat: Vehicle
 		if seat.Occupant ~= nil then
 			if seat.Occupant == humanoid then
 				resolve(seat)
+				return
 			else
 				local kickTargetHumanoidOutOfSeatPromise =
 					kickHumanoidOutOfSeatPromise(seat.Occupant)
@@ -222,9 +224,9 @@ end
 	@return Connection
 	
 	```lua
-	playerHumanoidUtil.playerHumanoidSeatPartObserver(player, function(newSeatPlayerIsSittingOn)
+	playerHumanoidUtil.playerHumanoidSeatPartObserver(player, function(seatPlayerIsSittingOn)
 		print(player.Name .. " sat on seat " ..tostring(newSeatPlayerIsSittingOn.Name))		
-	end, function(newSeatPlayerIsNoLongerSittingOn)
+	end, function(seatPlayerIsNoLongerSittingOn)
 		if newSeatPlayerIsNoLongerSittingOn ~= nil then 
 			print(player.Name .. " left seat " ..tostring(newSeatPlayerIsNoLongerSittingOn.Name))		
 		end
@@ -238,12 +240,10 @@ end
 function playerHumanoidUtil.playerHumanoidSeatPartObserver(
 	player: Player,
 	observerSeated: ((
-		newSeatPlayerIsSittingOn: Seat | VehicleSeat,
-		oldSeatPlayerWasSittingOn: (Seat | VehicleSeat)?
+		seatPlayerIsSittingOn: Seat | VehicleSeat
 	) -> ())?,
 	observerUnseated: ((
-		newSeatPlayerIsNoLongerSittingOn: (Seat | VehicleSeat)?,
-		oldSeatPlayerWasNoLongerSittingOn: (Seat | VehicleSeat)?
+		seatPlayerIsNoLongerSittingOn: (Seat | VehicleSeat)?
 	) -> ())?
 ): Connection.Connection
 	assert(
@@ -264,8 +264,6 @@ function playerHumanoidUtil.playerHumanoidSeatPartObserver(
 			lastHumanoidRetrievalPromise = playerHumanoidUtil
 				.playerHumanoidPromise(player)
 				:andThen(function(newHumanoid)
-					local oldSeatSeated = nil
-
 					table.insert(
 						connections,
 						instanceUtil.observeProperty(
@@ -274,12 +272,11 @@ function playerHumanoidUtil.playerHumanoidSeatPartObserver(
 							function(newSeatPart, oldSeatPart)
 								if newSeatPart ~= nil then
 									if observerSeated ~= nil then
-										observerSeated(newSeatPart, oldSeatPart)
+										observerSeated(newSeatPart)
 									end
 								else
 									if observerUnseated ~= nil then
-										observerUnseated(oldSeatPart, oldSeatSeated)
-										oldSeatSeated = oldSeatPart
+										observerUnseated(oldSeatPart)
 									end
 								end
 							end
