@@ -74,7 +74,7 @@ function instanceReplicationUtil.storeInstanceSnapshot(instance: Instance)
 	assert(RunService:IsServer(), "Can only store instance snapshot on the server!")
 
 	local instanceDescendants = instance:GetDescendants()
-	instance:SetAttribute(INSTANCE_DESCENDANTS_COUNT, #instanceDescendants)
+	instance:SetAttribute(INSTANCE_DESCENDANTS_COUNT_ATTRIBUTE, #instanceDescendants)
 
 	for _, descendant in instanceDescendants do
 		descendant:SetAttribute(INSTANCE_GUI_ID_ATTRIBUTE, HttpService:GenerateGUID(true))
@@ -140,9 +140,9 @@ function instanceReplicationUtil.instanceSnaphot(instance: Instance)
 				instance:GetAttribute(INSTANCE_DESCENDANTS_COUNT_ATTRIBUTE)
 		end
 
-		local validDescendantsCount = validDescendantsCount(instance)
+		local retrievedValidDescendantsCount = validDescendantsCount(instance)
 
-		if validDescendantsCount >= minimumRequiredInstanceDescendants then
+		if retrievedValidDescendantsCount >= minimumRequiredInstanceDescendants then
 			resolve()
 		else
 			local connection
@@ -152,10 +152,10 @@ function instanceReplicationUtil.instanceSnaphot(instance: Instance)
 				end
 
 				if instanceIsValid(descendant) then
-					validDescendantsCount += 1
+					retrievedValidDescendantsCount += 1
 				end
 
-				if validDescendantsCount >= minimumRequiredInstanceDescendants then
+				if retrievedValidDescendantsCount >= minimumRequiredInstanceDescendants then
 					connection:Disconnect()
 					resolve()
 				end
