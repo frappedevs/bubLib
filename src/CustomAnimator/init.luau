@@ -26,10 +26,12 @@ local CustomAnimator = {}
 CustomAnimator.__index = {}
 
 --[=[ 
-	Creates and returns a new custom animator object.
+	Creates and returns a new custom animator object. 
+
+	@return CustomAnimator
 ]=]
 
-function CustomAnimator.new(animator: Animator | AnimationController): CustomAnimator
+function CustomAnimator.new(animator: Animator | AnimationController)
 	assert(
 		typeof(animator) == "Instance"
 			and (animator:IsA("Animator") or animator:IsA("AnimationController")),
@@ -60,7 +62,7 @@ end
 
 function CustomAnimator.__index:onAnimationLoadPromise(animation: Animation)
 	return Promise.new(function(resolve)
-		while not self._loadedAnimationTracks[animation] do
+		while self._loadedAnimationTracks[animation] == nil do
 			self._onAnimationLoaded:Wait()
 		end
 
