@@ -128,6 +128,7 @@ end
 
 --[=[
 	@tag ClientRemoteProperty instance
+	@tag Deprecated
 	
 	Invokes the remote property, to set the value for the client to `value`.
 
@@ -164,6 +165,13 @@ end
 ]=]
 
 function ClientRemoteProperty.__index:set(value: any)
+	warn(
+		string.format(
+			"[ClientRemoteProperty:setPromise] has been deprecated as of 8/29/2024. \n\t%s",
+			debug.traceback()
+		)
+	)
+	
 	task.spawn(
 		self._remoteFunction.InvokeServer,
 		self._remoteFunction,

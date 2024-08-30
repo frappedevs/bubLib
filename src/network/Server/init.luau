@@ -17,21 +17,6 @@
 	@tag Read only
 ]=]
 
---[=[
-	@type MethodCallInbound (methodName: string, client: Player, args: {any}) -> boolean
-	@within NetworkServer
-]=]
-
---[=[
-	@type MethodCallOutbound (methodName: string, client: Player, args: {any}, methodResponse: any) -> any
-	@within NetworkServer
-]=]
-
---[=[
-	@type ValueDispatch (client: Player, value: any) -> any
-	@within NetworkServer
-]=]
-
 --[=[ 
 	@interface DefaultNetworkServerConfig 
 	@within NetworkServer
@@ -166,9 +151,9 @@
 --[=[
 	@interface NetworkServerMiddleware
 	@within NetworkServer
-	.methodCallInbound MethodCallInbound -- Before a callback runs.
-	.methodCallOutbound MethodCallOutbound -- After a callback has finished running.
-	.valueDispatch ValueDispatch -- Affects the return value of the callbacks (to the clients) after they've run.
+	.methodCallInbound (methodName: string, client: Player, args: {any}) -> boolean -- Before a callback runs.
+	.methodCallOutbound (methodName: string, client: Player, args: {any}, methodResponse: any) -> any -- After a callback has finished running.
+	.valueDispatch (client: Player, value: any) -> any -- Affects the return value of the callbacks (to the clients) after they've run.
 
 	:::warning Yielding in middleware callbacks is not allowed
 	Middleware callbacks aren't allowed to yield. If they do so, their thread will be closed via
@@ -437,25 +422,10 @@ local NetworkServer = {
 	__index = {},
 }
 
-type NetworkServerMiddleware = {
-	methodCallOutbound: {
-		(
-			methodName: string,
-			client: Player,
-			args: { any },
-			methodResponse: any
-		) -> any
-	}?,
-
-	methodCallInbound: { (methodName: string, client: Player, args: { any }) -> boolean }?,
-	valueDispatch: { (client: Player, value: any) -> any },
-}
-type NetworkServerConfig = {
-	automaticArgumentSerializationAndDeserializationEnabled: boolean,
-	promisifyCallbacks: boolean,
-}
-
 --[=[
+	@param middleware NetworkServerMiddleware?
+	@param networkServerConfig NetworkServerConfig?
+
 	Creates and returns a new network object of `name`.
 
 	```lua
@@ -480,8 +450,23 @@ type NetworkServerConfig = {
 
 function NetworkServer.new(
 	name: string,
-	middleware: NetworkServerMiddleware?,
-	networkServerConfig: NetworkServerConfig?
+	middleware: {
+		methodCallOutbound: {
+			(
+				methodName: string,
+				client: Player,
+				args: { any },
+				methodResponse: any
+			) -> any
+		}?,
+
+		methodCallInbound: { (methodName: string, client: Player, args: { any }) -> boolean }?,
+		valueDispatch: { (client: Player, value: any) -> any },
+	}?,
+	networkServerConfig: {
+		automaticArgumentSerializationAndDeserializationEnabled: boolean,
+		promisifyCallbacks: boolean,
+	}?
 ): NetworkServer
 	assert(networks[name] == nil, string.format('Network "%s" already exists!', name))
 

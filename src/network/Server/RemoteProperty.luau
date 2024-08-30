@@ -79,6 +79,7 @@
 			local testNetwork = network.client.fromParent("TestNetwork", Workspace):expect()
 			print(typeof(testNetwork.remoteProperty:get())) --> "TweenInfo"
 			```
+
 		- `automaticArgumentSerializationAndDeserializationEnabled` -> `false`
 			- Arguments and values sent across the network will not be internally serialized
 			and deserialized. Using the same example as above:
@@ -352,17 +353,21 @@ type Connection = {
 	Connected: boolean,
 	Disconnect: (self: Connection) -> (),
 }
-type RemotePropertyMiddleware = {
-	clientSet: { (remoteProperty: RemoteProperty, client: Player, value: any) -> any }?,
-	clientGet: { (remoteProperty: RemoteProperty, client: Player) -> any }?,
-}
-type RemotePropertyConfig = {
-	automaticArgumentSerializationAndDeserializationEnabled: boolean,
-}
-type Observer = (newValue: any, oldValue: any?) -> ()
+
+local function connection(cleanupCallback)
+	return {
+		Disconnect = function(self)
+			cleanupCallback()
+			self.Connected = false
+		end,
+
+		Connected = true,
+	}
+end
 
 --[=[
-	@param remotePropertyConfig RemotePropertyConfig
+	@param remotePropertyConfig RemotePropertyConfig?
+	@param middleware RemotePropertyMiddleware?
 
 	Creates and returns a new remote property with the value of `initialValue`.
 	
@@ -373,7 +378,10 @@ type Observer = (newValue: any, oldValue: any?) -> ()
 
 function RemoteProperty.new(
 	initialValue: any,
-	middleware: RemotePropertyMiddleware?,
+	middleware: {
+		clientSet: { (remoteProperty: RemoteProperty, client: Player, value: any) -> any }?,
+		clientGet: { (remoteProperty: RemoteProperty, client: Player) -> any }?,
+	}?,
 	remotePropertyConfig: {
 		automaticArgumentSerializationAndDeserializationEnabled: boolean,
 	}?
@@ -530,7 +538,7 @@ end
 	:::
 ]=]
 
-function RemoteProperty.__index:setForClient(client: Player, value: T)
+function RemoteProperty.__index:setForClient(client: Player, value: any)
 	if not client:IsDescendantOf(Players) then
 		error(
 			string.format(
@@ -597,11 +605,12 @@ end
 
 --[=[
 	@tag RemoteProperty instance
+	@return any 
 	
 	Returns a shallow copy of value stored *specifically* for `client` in the remote property. 
 ]=]
 
-function RemoteProperty.__index:clientValue(client: Player): T
+function RemoteProperty.__index:clientValue(client: Player)
 	local clientProperty = self._clientProperties[client]
 	return if clientProperty then clientProperty:get() else nil
 end
@@ -728,7 +737,7 @@ end
 
 --[=[
 	@tag RemoteProperty instance
-	@return () -> ()
+	@return Connection
 	
 	Observes the values set for clients in the remote property. 
 	
@@ -744,12 +753,12 @@ function RemoteProperty.__index:observeClientsValue(observer: (
 	player: Player,
 	newValue: any,
 	oldValue: any?
-) -> ())
+) -> ()): Connection
 	table.insert(self._clientsValueObservers, observer)
 
-	return function()
+	return connection(function()
 		table.remove(self._clientsValueObservers, table.find(self._clientsValueObservers, observer))
-	end
+	end)
 end
 
 --[=[
