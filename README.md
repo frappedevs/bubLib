@@ -13,7 +13,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [ContentProviderQueue](https://babypatrick100.github.io/libraries/api/ContentProviderQueue) | `ContentProviderQueue = "bubshurb/contentproviderqueue@1.1.0"` | `shared` |
 | [CustomAnimator](https://babypatrick100.github.io/libraries/api/CustomAnimator) | `CustomAnimator = "bubshurb/customanimator@1.3.0"` | `shared` |
 | [Property](https://babypatrick100.github.io/libraries/api/Property) | `Property = "bubshurb/property@2.4.0"` | `shared` |
-| [network](https://babypatrick100.github.io/libraries/api/network) | `network = "bubshurb/network@2.3.0"` | `shared` |
+| [network](https://babypatrick100.github.io/libraries/api/network) | `network = "bubshurb/network@2.4.0"` | `shared` |
 | [windLines](https://babypatrick100.github.io/libraries/api/windLines) | `windLines = "bubshurb/windlines@1.0.0"` | `shared` |
 | [matrixUtil](https://babypatrick100.github.io/libraries/api/matrixUtil) | `matrixUtil = "bubshurb/matrixutil@1.0.0"` | `shared` |
 | [instanceUtil](https://babypatrick100.github.io/libraries/api/InstanceUtil) | `instanceUtil = "bubshurb/instanceutil@1.1.0"` | `shared` |
