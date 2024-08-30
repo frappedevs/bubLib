@@ -136,31 +136,24 @@ end
 	```
 
 	:::warning
-	This method will throw an error if both `observerForToolEquipped` and `observerForToolEnequipped` are not specified, at least any *one* of them must be specified.
+	This method will throw an error if both `observerForToolEquipped` and `observerForToolUnequipped` are not specified, at least any *one* of them must be specified.
 	:::
 ]=]
 
-function toolUtil.observePlayerForToolsEquippedAndEnequipped(
+function toolUtil.observePlayerForToolsEquippedAndUnequipped(
 	player: Player,
-	observerForToolEquipped: ((
-		newToolEquipped: Tool,
-		oldToolEquipped: Tool?
-	) -> ())?,
-	observerForToolEnequipped: ((
-		newToolUnequipped: Tool,
-		oldToolUnequipped: Tool?
-	) -> ())?
+	observerForToolEquipped: ((toolEquipped: Tool) -> ())?,
+	observerForToolUnequipped: ((toolUnequipped: Tool) -> ())?
 )
 	assert(
-		observerForToolEquipped ~= nil or observerForToolEnequipped ~= nil,
-		"`observerForToolEquipped` or `observerForToolEnequipped`; any one of them must be specified."
+		observerForToolEquipped ~= nil or observerForToolUnequipped ~= nil,
+		"`observerForToolEquipped` or `observerForToolUnequipped`; any one of them must be specified."
 	)
 
-	local lastEquippedTool = toolUtil.currentEquippedTool(player)
-	local lastEnequippedTool = nil
+	local currentEquippedTool = toolUtil.currentEquippedTool(player)
 
-	if lastEquippedTool ~= nil and observerForToolEquipped ~= nil then
-		task.spawn(observerForToolEquipped, lastEquippedTool, nil)
+	if currentEquippedTool ~= nil and observerForToolEquipped ~= nil then
+		task.spawn(observerForToolEquipped, currentEquippedTool)
 	end
 
 	local connections = {}
@@ -175,13 +168,12 @@ function toolUtil.observePlayerForToolsEquippedAndEnequipped(
 							return
 						end
 
-						task.spawn(observerForToolEquipped, child, lastEquippedTool)
-						lastEquippedTool = child
+						task.spawn(observerForToolEquipped, child)
 					end)
 				)
 			end
 
-			if observerForToolEnequipped ~= nil then
+			if observerForToolUnequipped ~= nil then
 				table.insert(
 					connections,
 					newPlayerCharacter.ChildRemoved:Connect(function(child)
@@ -189,8 +181,7 @@ function toolUtil.observePlayerForToolsEquippedAndEnequipped(
 							return
 						end
 
-						task.spawn(observerForToolEnequipped, child, lastEnequippedTool)
-						lastEnequippedTool = child
+						task.spawn(observerForToolUnequipped, child)
 					end)
 				)
 			end
@@ -209,9 +200,9 @@ end
 	all initial tools in the player backpack.
 
 	```lua
-	toolUtil.observePlayerBackpackForTools(player, function(newToolAdded, oldToolAdded)
+	toolUtil.observePlayerBackpackForTools(player, function(toolAdded)
 	
-	end, function(newToolRemoved, oldToolRemoved)
+	end, function(toolRemoved)
 	
 	end)
 	```
@@ -223,14 +214,8 @@ end
 
 function toolUtil.observePlayerBackpackForTools(
 	player: Player,
-	observerForToolAdded: ((
-		newToolAdded: Tool,
-		oldToolAdded: Tool?
-	) -> ())?,
-	observerForToolRemoved: ((
-		newToolRemoved: Tool,
-		oldToolRemoved: Tool?
-	) -> ())?
+	observerForToolAdded: ((newToolAdded: Tool) -> ())?,
+	observerForToolRemoved: ((newToolRemoved: Tool) -> ())?
 )
 	assert(
 		observerForToolAdded ~= nil or observerForToolRemoved ~= nil,
@@ -244,26 +229,22 @@ function toolUtil.observePlayerBackpackForTools(
 		observePlayerBackpack(player, function(newBackpack)
 			if observerForToolAdded ~= nil then
 				for _, tool in newBackpack:GetChildren() do
-					task.spawn(observerForToolAdded, tool, nil)
+					task.spawn(observerForToolAdded, tool)
 				end
 
-				local lastToolAdded = nil
 				table.insert(
 					connections,
 					newBackpack.ChildAdded:Connect(function(tool)
-						task.spawn(observerForToolAdded, tool, lastToolAdded)
-						lastToolAdded = tool
+						task.spawn(observerForToolAdded, tool)
 					end)
 				)
 			end
 
 			if observerForToolRemoved ~= nil then
-				local lastToolRemoved = nil
 				table.insert(
 					connections,
 					newBackpack.ChildRemoved:Connect(function(tool)
-						task.spawn(observerForToolRemoved, tool, lastToolRemoved)
-						lastToolRemoved = tool
+						task.spawn(observerForToolRemoved, tool)
 					end)
 				)
 			end
@@ -281,9 +262,9 @@ end
 	Observes the player's backpack and character for any new tools added or removed.
 
 	```lua
-	toolUtil.observePlayerForToolOwnership(player, function(newToolOwnershipGranted, oldToolOwnershipGranted)
+	toolUtil.observePlayerForToolOwnership(player, function(toolOwnershipGranted)
 	
-	end, function(newToolOwnershipRemoved, oldToolOwnershipRemoved)
+	end, function(toolOwnershipRemoved)
 	
 	end)
 	```
@@ -296,8 +277,8 @@ end
 
 function toolUtil.observePlayerForToolOwnership(
 	player: Player,
-	observerForToolOwnershipGranted: ((newTool: Tool, oldTool: Tool?) -> ())?,
-	observerForToolOwnershipRemoved: ((newTool: Tool, oldTool: Tool?) -> ())?
+	observerForToolOwnershipGranted: ((newTool: Tool) -> ())?,
+	observerForToolOwnershipRemoved: ((newTool: Tool) -> ())?
 )
 	assert(
 		observerForToolOwnershipGranted ~= nil or observerForToolOwnershipRemoved ~= nil,
@@ -305,9 +286,6 @@ function toolUtil.observePlayerForToolOwnership(
 	)
 
 	local connections = {}
-	local lastToolOwnershipGranted = nil
-	local lastToolOwnershipRemoved = nil
-
 	local toolsOwnershipObserved = {}
 
 	-- We check if the child added or removed is a tool (in/from backpack) - while
@@ -321,8 +299,7 @@ function toolUtil.observePlayerForToolOwnership(
 		toolsOwnershipObserved[childAdded] = true
 
 		if observerForToolOwnershipGranted ~= nil then
-			task.spawn(observerForToolOwnershipGranted, childAdded, lastToolOwnershipGranted)
-			lastToolOwnershipGranted = childAdded
+			task.spawn(observerForToolOwnershipGranted, childAdded)
 		end
 	end
 
@@ -338,8 +315,7 @@ function toolUtil.observePlayerForToolOwnership(
 		toolsOwnershipObserved[childRemoved] = nil
 
 		if childRemoved.Parent ~= player.Character then
-			task.spawn(observerForToolOwnershipRemoved, childRemoved, lastToolOwnershipRemoved)
-			lastToolOwnershipRemoved = childRemoved
+			task.spawn(observerForToolOwnershipRemoved, childRemoved)
 		end
 	end
 
@@ -351,10 +327,8 @@ function toolUtil.observePlayerForToolOwnership(
 		toolsOwnershipObserved[childAdded] = true
 
 		if observerForToolOwnershipGranted ~= nil then
-			task.spawn(observerForToolOwnershipGranted, childAdded, lastToolOwnershipGranted)
+			task.spawn(observerForToolOwnershipGranted, childAdded)
 		end
-
-		lastToolOwnershipGranted = childAdded
 	end
 
 	local function characterChildRemoved(childRemoved)
@@ -369,10 +343,8 @@ function toolUtil.observePlayerForToolOwnership(
 		toolsOwnershipObserved[childRemoved] = nil
 
 		if observerForToolOwnershipRemoved ~= nil then
-			task.spawn(observerForToolOwnershipRemoved, childRemoved, lastToolOwnershipRemoved)
+			task.spawn(observerForToolOwnershipRemoved, childRemoved)
 		end
-
-		lastToolOwnershipRemoved = childRemoved
 	end
 
 	table.insert(
