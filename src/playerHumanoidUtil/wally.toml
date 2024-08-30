@@ -11,5 +11,6 @@ realm = "shared"
 [dependencies]
 Promise = "evaera/promise@4"
 Signal = "sleitnick/signal@2"
+Connection = "bubshurb/connection@1"
 instanceUtil = "bubshurb/instanceutil@1"
 playerEventsUtil = "bubshurb/playereventsutil@1"

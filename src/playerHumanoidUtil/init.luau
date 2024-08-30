@@ -9,6 +9,7 @@ local RunService = game:GetService("RunService")
 
 local Promise = require(script.Parent.Promise)
 local Signal = require(script.Parent.Signal)
+local Connection = require(script.Parent.Connection)
 local instanceUtil = require(script.Parent.instanceUtil)
 local playerEventsUtil = require(script.Parent.playerEventsUtil)
 
@@ -102,6 +103,8 @@ function playerHumanoidUtil.seatPlayer(player: Player, seat: VehicleSeat | Seat)
 end
 
 --[=[ 
+	@return Connection
+	
 	```lua
 	playerHumanoidUtil.playerHumanoidSeatPartObserver(player, function(newSeatPlayerIsSittingOn)
 		print(player.Name .. " sat on seat " ..tostring(newSeatPlayerIsSittingOn.Name))		
@@ -113,7 +116,7 @@ end
 	```
 
 	While you can simply listen to [humanoid.SeatPart](https://create.roblox.com/docs/reference/engine/classes/Humanoid#SeatPart), 
-	this method accounts for new player character reloading. Returns a cleanup function.
+	this method accounts for new player character reloading.
 ]=]
 
 function playerHumanoidUtil.playerHumanoidSeatPartObserver(
@@ -170,7 +173,7 @@ function playerHumanoidUtil.playerHumanoidSeatPartObserver(
 		end)
 	)
 
-	return function()
+	return Connection.new(function()
 		if lastHumanoidRetrievalPromise ~= nil then
 			lastHumanoidRetrievalPromise:cancel()
 		end
@@ -178,7 +181,7 @@ function playerHumanoidUtil.playerHumanoidSeatPartObserver(
 		for _, connection in connections do
 			connection:Disconnect()
 		end
-	end
+	end)
 end
 
 return table.freeze(playerHumanoidUtil)
