@@ -27,7 +27,7 @@ end
 --[=[ 
 	@return Connection
 
-    Registers the given callback which is called whenever the player hovers over a 3D instance.
+	Registers the given callback which is called whenever the player hovers over a 3D instance.
 ]=]
 
 function clientMouseUtil.registerMouseHoverStart(
@@ -53,7 +53,7 @@ end
 --[=[ 
 	@return Connection
 	
-    Registers the given callback which is called whenever the player no longer over a 3D instance.
+	Registers the given callback which is called whenever the player no hovers over a 3D instance.
 ]=]
 
 function clientMouseUtil.registerMouseHoverEnd(callback: (
