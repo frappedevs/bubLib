@@ -15,11 +15,6 @@ copyright = "Copyright © 2024 babypatrick100. Built with Moonwave and Docusauru
 section = "network"
 classes = ["network", "NetworkServer", "RemoteProperty", "RemoteSignal",  "networkClient", "ClientRemoteProperty", "ClientRemoteSignal"]
 
-[[classOrder]]
-section = "waitForUtil"
-classes = ["waitForUtil", "custom"]
-
-
 [[home.features]]
 title = "Faster Development"
 description = "Speed up your development progress by using already battle tested modules like network and queue!"
