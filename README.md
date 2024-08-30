@@ -65,7 +65,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [robuxConversionUtil](https://babypatrick100.github.io/libraries/api/robuxConversionUtil) | `robuxConversionUtil = "bubshurb/robuxconversionutil@1.0.0"` | `shared` |
 | [infoTypeUtil](https://babypatrick100.github.io/libraries/api/infoTypeUtil) | `infoTypeUtil = "bubshurb/infotypeutil@1.0.0"` | `shared` |
 | [seatUtil](https://babypatrick100.github.io/libraries/api/seatUtil) | `seatUtil = "bubshurb/seatutil@1.0.0"` | `shared` |
-| [playerHumanoidUtil](https://babypatrick100.github.io/libraries/api/playerHumanoidUtil) | `playerHumanoidUtil = "bubshurb/playerhumanoidutil@1.2.0"` | `shared` |
+| [playerHumanoidUtil](https://babypatrick100.github.io/libraries/api/playerHumanoidUtil) | `playerHumanoidUtil = "bubshurb/playerhumanoidutil@1.2.1"` | `shared` |
 | [propertyUtil](https://babypatrick100.github.io/libraries/api/propertyUtil) | `propertyUtil = "bubshurb/propertyutil@1.0.1"` | `shared` |
 | [playerCharacterAccessoryUtil](https://babypatrick100.github.io/libraries/api/playerCharacterAccessoryUtil) | `playerCharacterAccessoryUtil = "bubshurb/playercharacteraccessoryUtil@1.0.0"` | `shared` |
 | [evLightning](https://babypatrick100.github.io/libraries/api/evLightning) | `evLightning = "bubshurb/evlightning@1.0.0"` | `shared` |
