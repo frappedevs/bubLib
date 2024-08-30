@@ -8,6 +8,7 @@
 local RunService = game:GetService("RunService")
 
 local debugLoggerUtil = require(script.Parent.debugLoggerUtil)
+local Connection = require(script.Parent.Connection)
 
 local DEFAULT_MAX_EXPECTED_CALLBACK_EXECUTION_TIME = 0.4
 local CALLBACK_PERFORMANCE_WARN_LOG_INTERVAL = 10
@@ -23,6 +24,8 @@ local schedulerUtil = {
 }
 
 --[=[ 
+	@return Connection
+
 	Schedules the given callback to be run during the given run service event. This is useful because
 	this utility sets up all these events **once** and registers the given scheduledCallbacksData to be called during
 	each event's invocation point - this prevents you from initializing many different types of RunService
@@ -33,8 +36,6 @@ local schedulerUtil = {
 		-- Perform physics update here
 	end)
 	```
-
-	Additionally, this method also returns a cleanup function will call unschedule the scheduled event through [schedulerUtil.unschedule].
 
 	:::warning Yielding is not allowed
 	Scheduled callbacks **should** never yield. If they do so, other scheduled callbacks will not be able to run and the utility
@@ -57,7 +58,7 @@ function schedulerUtil.schedule(
 	callbackIdentifier: string,
 	callback: (...any) -> (),
 	maxExpectedCallbackRunTime: number?
-): () -> ()
+): Connection.Connection
 	assert(
 		schedulerUtil.RunServiceEvent[runServiceEventName],
 		string.format("Invalid run service event name [%s] passed!", runServiceEventName)
@@ -80,9 +81,9 @@ function schedulerUtil.schedule(
 			or DEFAULT_MAX_EXPECTED_CALLBACK_EXECUTION_TIME,
 	}
 
-	return function()
+	return Connection.new(function()
 		schedulerUtil.unschedule(runServiceEventName, callbackIdentifier)
-	end
+	end)
 end
 
 --[=[ 
@@ -140,9 +141,10 @@ for _, runServiceEvent in schedulerUtil.RunServiceEvent do
 					debugLoggerUtil.log(
 						error,
 						string.format(
-							"[PERFORMANCE WARN]: Callback [%s] took %.2fs to run!",
+							"[PERFORMANCE WARN]: Callback [%s] took %.2fs to run. Expected callback run time: %.2fs!",
 							identifier,
-							timeTakenForCallbackToFinishRunning
+							timeTakenForCallbackToFinishRunning,
+							scheduledCallbackData.maxExpectedCallbackRunTime
 						)
 					)
 					performanceWarnLogs[identifier] = os.clock()
