@@ -49,9 +49,8 @@ local DEFAULT_PLAYER_POLICY_INFO = {
 local playerPolicyInfoUtil = {}
 
 --[=[
-    Returns a [promise](https://eryn.io/roblox-lua-promise/) which is resolved with the policy info of `player`, if successfully retrieved. If the policy
-    info of the given player couldn't be retrieved, then the promise will reject with [DefaultPlayerPolicyInfo] 
-    and the error message.
+    Returns a [promise](https://eryn.io/roblox-lua-promise/) which is resolved with the policy info of `player`. If the policy
+    info of the given player couldn't be retrieved, then the promise will reject with [DefaultPlayerPolicyInfo] and an error message.
 
     ```lua
     playerPolicyInfoUtil.playerPolicyInfo(somePlayer):andThen(function(policyInfo)
@@ -61,7 +60,7 @@ local playerPolicyInfoUtil = {}
     end)
     ```
 
-    :::warning Read only policy info
+    :::note Read only policy info
     The policy info table will be *read-only*, through [table.freeze](https://create.roblox.com/docs/reference/engine/libraries/table#freeze).
     :::
 
