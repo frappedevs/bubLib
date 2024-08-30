@@ -4,35 +4,69 @@
 	A simple utility module for working with tools.
 ]=]
 
+local Connection = require(script.Parent.Connection)
 local playerEventsUtil = require(script.Parent.playerEventsUtil)
 local playersUtil = require(script.Parent.playersUtil)
 
 local toolUtil = {}
 
+local function observePlayerBackpack(
+	player: Player,
+	observer: (newBackpack: Backpack) -> ()
+): Connection.Connection
+	local connections = {}
+
+	local function playerChildAdded(childAdded)
+		if not childAdded:IsA("Backpack") then
+			return
+		end
+
+		observer(childAdded)
+	end
+
+	table.insert(connections, player.ChildAdded:Connect(playerChildAdded))
+
+	for _, child in player:GetChildren() do
+		task.spawn(playerChildAdded, child)
+	end
+
+	return Connection.new(function()
+		for _, connection in connections do
+			connection:Disconnect()
+		end
+	end)
+end
+
 --[=[
-	Returns the owner instance of the given tool, if found.
+	Attempts to returns the owner of the given tool, if found.
 ]=]
 
-function toolUtil.toolOwnerInstance(tool: Tool): Player?
+function toolUtil.toolOwner(tool: Tool): Player?
 	local playerFromTool = playersUtil.playerFromInstance(tool)
 	local toolParent = tool.Parent
 
-	if playerFromTool then
+	if playerFromTool ~= nil then
 		return playerFromTool
 	end
 
-	if toolParent then
-		if toolParent:IsA("Backpack") then
-			return toolParent.Parent
-		end
+	if toolParent ~= nil and toolParent:IsA("Backpack") then
+		return toolParent.Parent
 	end
 
 	return nil
 end
 
 --[=[ 
-    Places the given tool in the player's backpack and tries to
-    equips it on the humanoid.
+    Places the given tool in the given `player`'s backpack and a cloned variant of it in `player.StarterGear`.
+]=]
+
+function toolUtil.tryPlaceToolInBackpackAndStarterGear(player: Player, tool: Tool)
+	tool.Parent = player.Backpack
+	tool:Clone().Parent = player.StarterGear
+end
+
+--[=[ 
+    Places the given tool in the given `player`'s backpack and tries to equips it on the humanoid.
 ]=]
 
 function toolUtil.tryPlaceToolInBackpackAndEquip(player: Player, tool: Tool)
@@ -42,17 +76,17 @@ function toolUtil.tryPlaceToolInBackpackAndEquip(player: Player, tool: Tool)
 		then player.Character:FindFirstChildWhichIsA("Humanoid")
 		else nil
 
-	if humanoid then
+	if humanoid ~= nil then
 		humanoid:EquipTool(tool)
 	end
 end
 
 --[=[
-	Returns the player tool count. `predicate` is called on every tool owned by the player, and\
-	each time it returns `true`, the tool count is incremented by 1.
+	Returns the player tool count. `predicate` is called on every tool owned by the given `player`, and each time it returns `true`, 
+	the tool count is incremented by 1.
 ]=]
 
-function toolUtil.playerToolCountPredicate(player: Player, predicate: (tool: Tool) -> boolean)
+function toolUtil.mappedPlayerToolCount(player: Player, predicate: (tool: Tool) -> boolean)
 	local toolCount = 0
 	for _, playerTool in toolUtil.playerTools(player) do
 		if predicate(playerTool) == true then
@@ -64,13 +98,13 @@ function toolUtil.playerToolCountPredicate(player: Player, predicate: (tool: Too
 end
 
 --[=[
-	Returns an array of all player tools - equipped and enequipped.
+	Returns a read only array of all player tools - both equipped and unequipped.
 ]=]
 
 function toolUtil.playerTools(player: Player)
 	local tools = player.Backpack:GetChildren()
 
-	if player.Character then
+	if player.Character ~= nil then
 		for _, child in player.Character:GetChildren() do
 			if child:IsA("Tool") then
 				table.insert(tools, child)
@@ -86,7 +120,7 @@ end
 ]=]
 
 function toolUtil.currentEquippedTool(player: Player)
-	return if player.Character then player.Character:FindFirstChildWhichIsA("Tool") else nil
+	return if player.Character ~= nil then player.Character:FindFirstChildWhichIsA("Tool") else nil
 end
 
 --[=[ 
@@ -94,12 +128,16 @@ end
 	all the initial tool equipped. 
 
 	```lua
-	toolUtil.observePlayerForEquippedTool(player, function(newToolEquipped, oldToolEquipped)
+	toolUtil.observePlayerForEquippedTool(player, function(newToolEquipped)
 	
-	end, function(newToolUnequipped, oldToolUnEquipped)
+	end, function(newToolUnequipped)
 	
 	end)
 	```
+
+	:::warning
+	This method will throw an error if both `observerForToolEquipped` and `observerForToolEnequipped` are not specified, at least any *one* of them must be specified.
+	:::
 ]=]
 
 function toolUtil.observePlayerForToolsEquippedAndEnequipped(
@@ -114,13 +152,14 @@ function toolUtil.observePlayerForToolsEquippedAndEnequipped(
 	) -> ())?
 )
 	assert(
-		observerForToolEquipped ~= nil or observerForToolEnequipped,
-		"At least 1 observer should be specified."
+		observerForToolEquipped ~= nil or observerForToolEnequipped ~= nil,
+		"`observerForToolEquipped` or `observerForToolEnequipped`; any one of them must be specified."
 	)
 
 	local lastEquippedTool = toolUtil.currentEquippedTool(player)
-	local lastEnequippedTool
-	if lastEquippedTool and observerForToolEquipped then
+	local lastEnequippedTool = nil
+
+	if lastEquippedTool ~= nil and observerForToolEquipped ~= nil then
 		task.spawn(observerForToolEquipped, lastEquippedTool, nil)
 	end
 
@@ -128,7 +167,7 @@ function toolUtil.observePlayerForToolsEquippedAndEnequipped(
 	table.insert(
 		connections,
 		playerEventsUtil.usePlayerCharacterAdded(player, function(newPlayerCharacter)
-			if observerForToolEquipped then
+			if observerForToolEquipped ~= nil then
 				table.insert(
 					connections,
 					newPlayerCharacter.ChildAdded:Connect(function(child)
@@ -142,7 +181,7 @@ function toolUtil.observePlayerForToolsEquippedAndEnequipped(
 				)
 			end
 
-			if observerForToolEnequipped then
+			if observerForToolEnequipped ~= nil then
 				table.insert(
 					connections,
 					newPlayerCharacter.ChildRemoved:Connect(function(child)
@@ -158,13 +197,11 @@ function toolUtil.observePlayerForToolsEquippedAndEnequipped(
 		end)
 	)
 
-	return table.freeze({
-		Disconnect = function()
-			for _, connection in connections do
-				connection:Disconnect()
-			end
-		end,
-	})
+	return Connection.new(function()
+		for _, connection in connections do
+			connection:Disconnect()
+		end
+	end)
 end
 
 --[=[ 
@@ -178,6 +215,10 @@ end
 	
 	end)
 	```
+
+	:::warning
+	This method will throw an error if both `observerForToolAdded` and `observerForToolRemoved` are not specified, at least any *one* of them must be specified.
+	:::
 ]=]
 
 function toolUtil.observePlayerBackpackForTools(
@@ -192,45 +233,48 @@ function toolUtil.observePlayerBackpackForTools(
 	) -> ())?
 )
 	assert(
-		observerForToolAdded ~= nil or observerForToolRemoved,
-		"At least 1 observer should be specified."
+		observerForToolAdded ~= nil or observerForToolRemoved ~= nil,
+		"`observerForToolAdded` or `observerForToolRemoved`; any one of them must be specified."
 	)
 
 	local connections = {}
 
-	if observerForToolAdded then
-		for _, tool in player.Backpack:GetChildren() do
-			task.spawn(observerForToolAdded, tool, nil)
-		end
+	table.insert(
+		connections,
+		observePlayerBackpack(player, function(newBackpack)
+			if observerForToolAdded ~= nil then
+				for _, tool in newBackpack:GetChildren() do
+					task.spawn(observerForToolAdded, tool, nil)
+				end
 
-		local lastToolAdded
-		table.insert(
-			connections,
-			player.Backpack.ChildAdded:Connect(function(tool)
-				task.spawn(observerForToolAdded, tool, lastToolAdded)
-				lastToolAdded = tool
-			end)
-		)
-	end
-
-	if observerForToolRemoved then
-		local lastToolRemoved
-		table.insert(
-			connections,
-			player.Backpack.ChildRemoved:Connect(function(tool)
-				task.spawn(observerForToolRemoved, tool, lastToolRemoved)
-				lastToolRemoved = tool
-			end)
-		)
-	end
-
-	return table.freeze({
-		Disconnect = function()
-			for _, connection in connections do
-				connection:Disconnect()
+				local lastToolAdded = nil
+				table.insert(
+					connections,
+					newBackpack.ChildAdded:Connect(function(tool)
+						task.spawn(observerForToolAdded, tool, lastToolAdded)
+						lastToolAdded = tool
+					end)
+				)
 			end
-		end,
-	})
+
+			if observerForToolRemoved ~= nil then
+				local lastToolRemoved = nil
+				table.insert(
+					connections,
+					newBackpack.ChildRemoved:Connect(function(tool)
+						task.spawn(observerForToolRemoved, tool, lastToolRemoved)
+						lastToolRemoved = tool
+					end)
+				)
+			end
+		end)
+	)
+
+	return Connection.new(function()
+		for _, connection in connections do
+			connection:Disconnect()
+		end
+	end)
 end
 
 --[=[ 
@@ -243,6 +287,11 @@ end
 	
 	end)
 	```
+
+	:::warning
+	This method will throw an error if both `observerForToolOwnershipGranted` and `observerForToolOwnershipRemoved` are not specified, at least any
+	*one* of them must be specified.
+	:::
 ]=]
 
 function toolUtil.observePlayerForToolOwnership(
@@ -251,113 +300,114 @@ function toolUtil.observePlayerForToolOwnership(
 	observerForToolOwnershipRemoved: ((newTool: Tool, oldTool: Tool?) -> ())?
 )
 	assert(
-		observerForToolOwnershipGranted ~= nil or observerForToolOwnershipRemoved,
-		"At least 1 observer should be specified."
+		observerForToolOwnershipGranted ~= nil or observerForToolOwnershipRemoved ~= nil,
+		"`observerForToolOwnershipGranted` or `observerForToolOwnershipRemoved`; any one of them must be specified."
 	)
 
 	local connections = {}
-	local lastToolOwnershipGranted
-	local lastToolOwnershipRemoved
-	local lastBackpackTools = {}
+	local lastToolOwnershipGranted = nil
+	local lastToolOwnershipRemoved = nil
 
-	playerEventsUtil.usePlayerCharacterAdded(player, function(newPlayerCharacter)
-		if observerForToolOwnershipRemoved then
-			for _, lastBackpackTool in lastBackpackTools do
-				task.spawn(
-					observerForToolOwnershipRemoved,
-					lastBackpackTool,
-					lastToolOwnershipRemoved
-				)
-				lastToolOwnershipRemoved = lastBackpackTool
-			end
+	local toolsOwnershipObserved = {}
 
-			table.clear(lastBackpackTools)
-
-			table.insert(
-				connections,
-				player.Backpack.ChildRemoved:Connect(function(toolRemoved)
-					if toolRemoved.Parent ~= player.Character then
-						task.spawn(
-							observerForToolOwnershipRemoved,
-							toolRemoved,
-							lastToolOwnershipRemoved
-						)
-						lastToolOwnershipRemoved = toolRemoved
-					end
-				end)
-			)
-
-			table.insert(
-				connections,
-				newPlayerCharacter.ChildRemoved:Connect(function(childRemoved)
-					if not childRemoved:IsA("Tool") or childRemoved.Parent == player.Backpack then
-						return
-					end
-
-					task.spawn(
-						observerForToolOwnershipRemoved,
-						childRemoved,
-						lastToolOwnershipRemoved
-					)
-					lastToolOwnershipRemoved = childRemoved
-				end)
-			)
-
-			table.insert(
-				connections,
-				player.Backpack.ChildAdded:Connect(function(toolAdded)
-					lastBackpackTools = player.Backpack:GetChildren()
-				end)
-			)
-
-			lastBackpackTools = player.Backpack:GetChildren()
+	-- We check if the child added or removed is a tool (in/from backpack) - while
+	-- this is not necessary, it is done so to not have the code break as a result
+	-- of potential developer error (player.Backpack must ideally consist of only tools!)
+	local function backpackChildAdded(childAdded)
+		if toolsOwnershipObserved[childAdded] or not childAdded:IsA("Tool") then
+			return
 		end
 
-		if observerForToolOwnershipGranted then
-			for _, tool in player.Backpack:GetChildren() do
-				task.spawn(observerForToolOwnershipGranted, tool, lastToolOwnershipGranted)
-				lastToolOwnershipGranted = tool
+		toolsOwnershipObserved[childAdded] = true
+
+		if observerForToolOwnershipGranted ~= nil then
+			task.spawn(observerForToolOwnershipGranted, childAdded, lastToolOwnershipGranted)
+			lastToolOwnershipGranted = childAdded
+		end
+	end
+
+	local function backpackChildRemoved(childRemoved)
+		if
+			childRemoved.Parent == player.Character
+			or toolsOwnershipObserved[childRemoved] == nil
+			or not childRemoved:IsA("Tool")
+		then
+			return
+		end
+
+		toolsOwnershipObserved[childRemoved] = nil
+
+		if childRemoved.Parent ~= player.Character then
+			task.spawn(observerForToolOwnershipRemoved, childRemoved, lastToolOwnershipRemoved)
+			lastToolOwnershipRemoved = childRemoved
+		end
+	end
+
+	local function characterChildAdded(childAdded)
+		if not childAdded:IsA("Tool") or toolsOwnershipObserved[childAdded] then
+			return
+		end
+
+		toolsOwnershipObserved[childAdded] = true
+
+		if observerForToolOwnershipGranted ~= nil then
+			task.spawn(observerForToolOwnershipGranted, childAdded, lastToolOwnershipGranted)
+		end
+
+		lastToolOwnershipGranted = childAdded
+	end
+
+	local function characterChildRemoved(childRemoved)
+		if
+			not childRemoved:IsA("Tool")
+			or childRemoved.Parent == player.Backpack
+			or toolsOwnershipObserved[childRemoved] == nil
+		then
+			return
+		end
+
+		toolsOwnershipObserved[childRemoved] = nil
+
+		if observerForToolOwnershipRemoved ~= nil then
+			task.spawn(observerForToolOwnershipRemoved, childRemoved, lastToolOwnershipRemoved)
+		end
+
+		lastToolOwnershipRemoved = childRemoved
+	end
+
+	table.insert(
+		connections,
+		observePlayerBackpack(player, function(newBackpack)
+			for _, child in newBackpack:GetChildren() do
+				backpackChildAdded(child)
 			end
 
-			local currentEquippedTool = newPlayerCharacter:FindFirstChildWhichIsA("Tool")
-			if currentEquippedTool then
-				task.spawn(observerForToolOwnershipGranted, currentEquippedTool, nil)
+			table.insert(connections, newBackpack.ChildAdded:Connect(backpackChildAdded))
+			table.insert(connections, newBackpack.ChildRemoved:Connect(backpackChildRemoved))
+		end)
+	)
+
+	table.insert(
+		connections,
+		playerEventsUtil.usePlayerCharacterAdded(player, function(newPlayerCharacter)
+			table.insert(
+				connections,
+				newPlayerCharacter.ChildRemoved:Connect(characterChildRemoved)
+			)
+
+			table.insert(connections, newPlayerCharacter.ChildAdded:Connect(characterChildAdded))
+
+			for _, child in newPlayerCharacter:GetChildren() do
+				task.spawn(characterChildAdded, child)
 			end
+		end)
+	)
 
-			table.insert(
-				connections,
-				player.Backpack.ChildAdded:Connect(function(toolAdded)
-					task.spawn(observerForToolOwnershipGranted, toolAdded, lastToolOwnershipGranted)
-					lastToolOwnershipGranted = toolAdded
-				end)
-			)
-
-			local lastToolOwnershipGranted
-			table.insert(
-				connections,
-				newPlayerCharacter.ChildAdded:Connect(function(childAdded)
-					if not childAdded:IsA("Tool") then
-						return
-					end
-
-					task.spawn(
-						observerForToolOwnershipGranted,
-						childAdded,
-						lastToolOwnershipGranted
-					)
-					lastToolOwnershipGranted = childAdded
-				end)
-			)
+	return Connection.new(function()
+		for _, connection in connections do
+			connection:Disconnect()
 		end
 	end)
-
-	return table.freeze({
-		Disconnect = function()
-			for _, connection in connections do
-				connection:Disconnect()
-			end
-		end,
-	})
 end
 
 return table.freeze(toolUtil)
