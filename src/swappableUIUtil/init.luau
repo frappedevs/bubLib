@@ -190,7 +190,7 @@ function swappableUIUtil.swappable(
 		end
 	end))
 
-	trove:Add(UserInputService.InputEnded:Connect(function(input, inputWasProcessed)
+	trove:Add(UserInputService.InputEnded:Connect(function(input)
 		if
 			input.UserInputType == Enum.UserInputType.MouseButton1
 			or input.UserInputType == Enum.UserInputType.Touch

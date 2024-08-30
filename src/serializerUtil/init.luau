@@ -126,10 +126,10 @@ function serializerUtil.deserialize(serializedData: any)
 		return serializedData
 	end
 
-	local valueType = serializedData.valueType
+	local typeOfThisValue = serializedData.valueType
 
 	for serializerType, deserializer in deserializers do
-		if serializerType == valueType then
+		if serializerType == typeOfThisValue then
 			return deserializer.run(serializedData)
 		end
 	end
