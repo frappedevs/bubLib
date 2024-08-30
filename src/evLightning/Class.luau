@@ -1,3 +1,5 @@
+-- #selene: allow(mixed_table)
+
 --[[
 Copyright (c) 2009 Bart Bes
 Permission is hereby granted, free of charge, to any person

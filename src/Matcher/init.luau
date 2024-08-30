@@ -1,3 +1,5 @@
+-- #selene: allow(unused_variable)
+
 --[=[
 	@class Matcher
 

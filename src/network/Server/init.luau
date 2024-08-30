@@ -608,9 +608,11 @@ function NetworkServer.__index:append(
 )
 	assert(
 		not self:dispatched(),
-		"Cannot append key value pair ([%s]: %s) as network object is dispatched to the client!",
-		key,
-		tostring(value)
+		string.format(
+			"Cannot append key value pair ([%s]: %s) as network object is dispatched to the client!",
+			key,
+			tostring(value)
+		)
 	)
 
 	self:_setup(key, value)

@@ -239,6 +239,8 @@ function ZonePlus:_calculateRegion(tableOfParts, dontRound)
 			elseif boundType == "Max" then
 				return (v >= currentValue)
 			end
+
+			return false
 		end
 		function details:parse(valuesToParse)
 			for i, v in pairs(valuesToParse) do
@@ -322,7 +324,7 @@ function ZonePlus:_update()
 
 	local containerType = typeof(container)
 	local holders = {}
-	local INVALID_TYPE_WARNING = "The zone container must be a model, folder, basepart or table!"
+
 	if containerType == "table" then
 		for _, part in pairs(container) do
 			if part:IsA("BasePart") then
@@ -348,7 +350,7 @@ function ZonePlus:_update()
 
 	local allZonePartsAreBlocksNew = true
 	for _, zonePart in pairs(zoneParts) do
-		local success, shapeName = pcall(function()
+		local _, shapeName = pcall(function()
 			return zonePart.Shape.Name
 		end)
 		if shapeName ~= "Block" then
@@ -358,13 +360,13 @@ function ZonePlus:_update()
 	self.allZonePartsAreBlocks = allZonePartsAreBlocksNew
 
 	local zonePartsWhitelist = OverlapParams.new()
-	zonePartsWhitelist.FilterType = Enum.RaycastFilterType.Whitelist
+	zonePartsWhitelist.FilterType = Enum.RaycastFilterType.Include
 	zonePartsWhitelist.MaxParts = #zoneParts
 	zonePartsWhitelist.FilterDescendantsInstances = zoneParts
 	self.overlapParams.zonePartsWhitelist = zonePartsWhitelist
 
 	local zonePartsIgnorelist = OverlapParams.new()
-	zonePartsIgnorelist.FilterType = Enum.RaycastFilterType.Blacklist
+	zonePartsIgnorelist.FilterType = Enum.RaycastFilterType.Exclude
 	zonePartsIgnorelist.FilterDescendantsInstances = zoneParts
 	self.overlapParams.zonePartsIgnorelist = zonePartsIgnorelist
 

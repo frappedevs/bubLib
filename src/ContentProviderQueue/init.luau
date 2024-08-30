@@ -268,7 +268,7 @@ function ContentProviderQueue.__index:_init()
 	end)
 end
 
-RunService.Heartbeat:Connect(function(deltaTime)
+RunService.Heartbeat:Connect(function()
 	for _, contentProviderQueue in contentProviderQueues do
 		if contentProviderQueue._paused or #contentProviderQueue._instances == 0 then
 			continue

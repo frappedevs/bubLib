@@ -10,7 +10,7 @@
 
 -- https://stackoverflow.com/questions/20694133/how-to-to-add-th-or-rd-to-the-date
 local function ordinal(number: number): string
-	local ordinal, digit = { "st", "nd", "rd" }, string.sub(tostring(number), -1)
+	local ordinals, digit = { "st", "nd", "rd" }, string.sub(tostring(number), -1)
 
 	if
 		tonumber(digit) > 0
@@ -19,7 +19,7 @@ local function ordinal(number: number): string
 		and string.sub(tostring(number), -2) ~= tostring(12)
 		and string.sub(tostring(number), -2) ~= tostring(13)
 	then
-		return number .. ordinal[tonumber(digit) :: number]
+		return number .. ordinals[tonumber(digit) :: number]
 	else
 		return number .. "th"
 	end

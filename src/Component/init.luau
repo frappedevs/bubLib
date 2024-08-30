@@ -217,8 +217,8 @@ local function shouldConstruct(component): boolean
 	for _, extension in component[KEY_ACTIVE_EXTENSIONS] do
 		local fn = extension.shouldConstruct
 		if type(fn) == "function" then
-			local shouldConstruct = fn(component)
-			if not shouldConstruct then
+			local shouldConstructComponent = fn(component)
+			if not shouldConstructComponent then
 				return false
 			end
 		end

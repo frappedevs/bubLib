@@ -8,7 +8,8 @@ local beamUtil = {}
 
 -- https://devforum.roblox.com/t/how-is-this-follow-the-arrows-system-made/297875/2
 local function pathToPart(beam: Beam, a0: Attachment, part: BasePart)
-	local attachment1 = part:FindFirstChildOfClass("Attachment") or Instance.new("Attachment", part)
+	local attachment1 = part:FindFirstChildOfClass("Attachment") or Instance.new("Attachment")
+	attachment1.Parent = part
 
 	beam.Attachment0 = a0
 	beam.Attachment1 = attachment1
