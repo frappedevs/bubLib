@@ -78,15 +78,14 @@ local contentProviderQueues = {}
 local ContentProviderQueue = {}
 ContentProviderQueue.__index = {}
 
-type Signal = typeof(Signal.new())
-type Janitor = typeof(Janitor.new())
-
 --[=[
 	Creates a new content preloader queue. An `initialUpdateInterval` argument can be passed
 	as the initial update interval of the queue.
+
+	@return ContentProviderQueue
 ]=]
 
-function ContentProviderQueue.new(initialUpdateInterval: number?): ContentProviderQueue
+function ContentProviderQueue.new(initialUpdateInterval: number?)
 	local janitor = Janitor.new()
 	local self = setmetatable({
 		onInstancePreloaded = janitor:Add(Signal.new()),
@@ -104,6 +103,14 @@ function ContentProviderQueue.new(initialUpdateInterval: number?): ContentProvid
 
 	self:_init()
 	return self
+end
+
+--[=[
+	Returns a boolean indicating whether or not `self` is a [ContentProviderQueue] object or not.
+]=]
+
+function ContentProviderQueue.is(self: any): boolean
+	return getmetatable(self) == ContentProviderQueue
 end
 
 --[=[
@@ -228,7 +235,7 @@ end
 	Clears all instances to be preloaded from the content provider queue, via [ContentProviderQueue:remove].
 ]=]
 
-function ContentProviderQueue.__index:empty()
+function ContentProviderQueue.__index:removeAll()
 	for _, instance in self._instances do
 		self:remove(instance)
 	end
@@ -250,10 +257,6 @@ end
 function ContentProviderQueue.__index:destroy()
 	self._janitor:Destroy()
 end
-
---[=[
-	@private
-]=]
 
 function ContentProviderQueue.__index:_init()
 	table.insert(contentProviderQueues, self)
@@ -288,13 +291,11 @@ RunService.Heartbeat:Connect(function(deltaTime)
 					ContentProvider:PreloadAsync({ instance }, function(contentProviderId, status)
 						-- Ensure we don't run further code if the content provider queue
 						-- was destroyed during preloading of assets, to avoid errors!
-						if not table.find(contentProviderQueues, contentProviderQueue) then
+						if not ContentProviderQueue.is(contentProviderQueues) then
 							return
 						end
 
-						if not table.find(contentProviderQueue._instances, instance) then
-							-- Instance was removed from the queue, even though it has
-							-- been processed for preload..
+						if table.find(contentProviderQueue._instances, instance) == nil then
 							return
 						end
 
@@ -331,21 +332,6 @@ RunService.Heartbeat:Connect(function(deltaTime)
 	end
 end)
 
-export type ContentProviderQueue = typeof(setmetatable(
-	{} :: {
-		onInstancePreloaded: Signal,
-		onInstancePreloading: Signal,
-		onInstanceAdded: Signal,
-		onInstanceRemoved: Signal,
-		_janitor: Janitor,
-		_instances: { Instance },
-		_instancesPreloading: { Instance },
-		_instancesSuccessfullyPreloadedCount: number,
-		_instancesToPreload: number,
-		_updateInterval: number,
-		_paused: boolean,
-	},
-	ContentProviderQueue
-))
+export type ContentProviderQueue = typeof(ContentProviderQueue.new())
 
 return table.freeze(ContentProviderQueue)
