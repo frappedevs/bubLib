@@ -1,14 +1,12 @@
-local Promise = require(script.Parent.Promise)
-
 --[=[
 	@class instanceAttributeUtil
 
 	A utility module for working with instance attributes.
 ]=]
 
-local instanceAttributeUtil = {}
+local Promise = require(script.Parent.Promise)
 
-type Observer = (newAttributeValue: any, oldAttributeValue: any) -> ()
+local instanceAttributeUtil = {}
 
 --[=[
 	Returns a read only array of all descendants in `instanceTree` which have the
@@ -41,7 +39,10 @@ end
 function instanceAttributeUtil.observeMany(
 	instance: Instance,
 	attributesToObserve: { [string]: any },
-	observer: Observer
+	observer: (
+		newAttributeValue: any,
+		oldAttributeValue: any
+	) -> ()
 ): RBXScriptConnection
 	local attributesToObserveNew = table.clone(attributesToObserve)
 	local attributesToObserveOld = table.clone(attributesToObserve)
@@ -54,6 +55,7 @@ function instanceAttributeUtil.observeMany(
 
 		local newAttributeValue = instance:GetAttribute(attribute)
 		attributesToObserveNew[attribute] = newAttributeValue
+
 		task.spawn(observer, attributesToObserveNew, attributesToObserveOld)
 		attributesToObserveOld[attribute] = newAttributeValue
 	end)
@@ -120,13 +122,14 @@ end
 function instanceAttributeUtil.observe(
 	instance: Instance,
 	desiredAttribute: string,
-	observer: Observer
+	observer: (newAttributeValue: any, oldAttributeValue: any) -> ()
 ): (RBXScriptConnection, any)
 	local oldAttributeValue = instance:GetAttribute(desiredAttribute)
 	local promise = Promise.new(function(resolve)
 		if oldAttributeValue ~= nil then
 			observer(oldAttributeValue, nil)
 		end
+
 		resolve()
 	end)
 
