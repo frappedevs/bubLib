@@ -3,34 +3,56 @@ name: CI
 on:
   push:
     branches:
-    - main
+      - main
   pull_request:
     branches:
-    - main
+      - main
 
 jobs:
-
-  lint:
-    name: Lint
+  analyze:
+    name: Analyze
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Install Rokit
-      uses: CompeyDev/setup-rokit@v0.1.2
+      - name: Install Aftman
+        uses: ok-nick/setup-aftman@v0.4.2
+        with:
+          token: ${{ github.token }}
 
-    - name: Lint
-      run: |
-        selene src
+      - name: Analyze
+        run: sh scripts/analyse.sh
 
   style:
     name: Styling
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: JohnnyMorganz/stylua-action@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        version: v0.20.0
-        args: --check src
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Check code style
+        uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ github.token }}
+          version: latest
+          args: --check src
+        continue-on-error: true
+
+      - name: Fix code style issues
+        uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ github.token }}
+          version: latest
+          args: src
+
+      - name: Formatting with StyLua
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "[Auto]: Fix code style issues"
+          branch: ${{ github.head_ref }}
