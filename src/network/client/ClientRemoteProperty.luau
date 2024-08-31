@@ -171,7 +171,7 @@ function ClientRemoteProperty.__index:set(value: any)
 			debug.traceback()
 		)
 	)
-	
+
 	task.spawn(
 		self._remoteFunction.InvokeServer,
 		self._remoteFunction,

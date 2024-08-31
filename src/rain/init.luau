@@ -301,22 +301,25 @@ end
 local ignoreEmitterList = { emitter }
 local raycastParams = RaycastParams.new()
 local raycastFunctions = {}
-raycastFunctions[CollisionMode.none] =
-	function(origin: Vector3, direction: Vector3, ignoreCharacter: boolean?)
-		if collisionList then
-			raycastParams.FilterDescendantsInstances = {}
+raycastFunctions[CollisionMode.none] = function(
+	origin: Vector3,
+	direction: Vector3,
+	ignoreCharacter: boolean?
+)
+	if collisionList then
+		raycastParams.FilterDescendantsInstances = {}
 
-			raycastParams:AddToFilter(
-				if ignoreCharacter
-					then { emitter, if Players.LocalPlayer then Players.LocalPlayer.Character else nil }
-					else ignoreEmitterList
-			)
+		raycastParams:AddToFilter(
+			if ignoreCharacter
+				then { emitter, if Players.LocalPlayer then Players.LocalPlayer.Character else nil }
+				else ignoreEmitterList
+		)
 
-			raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-		end
-
-		return Workspace:Raycast(origin, direction, if collisionList then raycastParams else nil)
+		raycastParams.FilterType = Enum.RaycastFilterType.Exclude
 	end
+
+	return Workspace:Raycast(origin, direction, if collisionList then raycastParams else nil)
+end
 raycastFunctions[CollisionMode.blacklist] = function(origin: Vector3, direction: Vector3)
 	if collisionList then
 		raycastParams.FilterDescendantsInstances = {}

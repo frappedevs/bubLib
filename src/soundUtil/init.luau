@@ -355,10 +355,7 @@ end
 
 function soundUtil.registerSoundHeartbeatCallback(
 	sound: Sound,
-	heartbeatCallback: (
-		sound: Sound,
-		deltaTime: number
-	) -> ()
+	heartbeatCallback: (sound: Sound, deltaTime: number) -> ()
 )
 	soundHeartbeatCallbacks[sound] = heartbeatCallback
 end
@@ -390,10 +387,10 @@ end
 
 function soundUtil.registerSoundIdHeartbeatCallback(
 	soundId: string,
-	heartbeatCallback: ((
+	heartbeatCallback: (
 		soundId: string,
 		deltaTime: number
-	) -> ())
+	) -> ()
 )
 	soundIdHeartbeatCallbacks[soundId] = heartbeatCallback
 end
