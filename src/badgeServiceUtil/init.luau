@@ -22,9 +22,9 @@
 	.IsEnabled false
 ]=]
 
-local BadgeService = game:GetService("BadgeService")
+		local BadgeService = game:GetService("BadgeService")
 
-local Promise = require(script.Parent.Promise)
+			local Promise = require(script.Parent.Promise)
 
 local DEFAULT_BADGE_INFO = {
 	Name = "",
