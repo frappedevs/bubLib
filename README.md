@@ -70,6 +70,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [playerCharacterAccessoryUtil](https://babypatrick100.github.io/libraries/api/playerCharacterAccessoryUtil) | `playerCharacterAccessoryUtil = "bubshurb/playercharacteraccessoryUtil@1.0.0"` | `shared` |
 | [evLightning](https://babypatrick100.github.io/libraries/api/evLightning) | `evLightning = "bubshurb/evlightning@1.0.0"` | `shared` |
 | [playerEventsUtil](https://babypatrick100.github.io/libraries/api/playerEventsUtil) | `playerEventsUtil = "bubshurb/playereventsutil@1.1.0"` | `shared` |
+| [playerHumanoidWalkSpeedUtil](https://babypatrick100.github.io/libraries/api/playerHumanoidWalkSpeedUtil) | `playerHumanoidWalkSpeedUtil = "bubshurb/playerhumanoidwalkspeedutil@1.0.0"` | `shared` |
 
 
 ## License notice
