@@ -12,7 +12,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [Hover](https://babypatrick100.github.io/libraries/api/Hover) | `Hover = "bubshurb/hover@1.1.0` | `shared` |
 | [ContentProviderQueue](https://babypatrick100.github.io/libraries/api/ContentProviderQueue) | `ContentProviderQueue = "bubshurb/contentproviderqueue@1.1.0"` | `shared` |
 | [CustomAnimator](https://babypatrick100.github.io/libraries/api/CustomAnimator) | `CustomAnimator = "bubshurb/customanimator@1.3.0"` | `shared` |
-| [Property](https://babypatrick100.github.io/libraries/api/Property) | `Property = "bubshurb/property@2.4.0"` | `shared` |
+| [Property](https://babypatrick100.github.io/libraries/api/Property) | `Property = "bubshurb/property@2.4.1"` | `shared` |
 | [network](https://babypatrick100.github.io/libraries/api/network) | `network = "bubshurb/network@2.4.1"` | `shared` |
 | [windLines](https://babypatrick100.github.io/libraries/api/windLines) | `windLines = "bubshurb/windlines@1.0.0"` | `shared` |
 | [matrixUtil](https://babypatrick100.github.io/libraries/api/matrixUtil) | `matrixUtil = "bubshurb/matrixutil@1.0.0"` | `shared` |
@@ -70,6 +70,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [playerCharacterAccessoryUtil](https://babypatrick100.github.io/libraries/api/playerCharacterAccessoryUtil) | `playerCharacterAccessoryUtil = "bubshurb/playercharacteraccessoryUtil@1.0.0"` | `shared` |
 | [evLightning](https://babypatrick100.github.io/libraries/api/evLightning) | `evLightning = "bubshurb/evlightning@1.0.0"` | `shared` |
 | [playerEventsUtil](https://babypatrick100.github.io/libraries/api/playerEventsUtil) | `playerEventsUtil = "bubshurb/playereventsutil@1.1.0"` | `shared` |
+
 
 ## License notice
 
