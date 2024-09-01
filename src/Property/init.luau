@@ -262,18 +262,35 @@ end
 function Property.__index:valuePromise(valuePredicate: ((newValue: any, oldValue: any) -> boolean)?)
 	return self._trove:AddPromise(Promise.new(function(resolve)
 		if valuePredicate ~= nil then
-			local lastValue
-			while valuePredicate(self:get(), lastValue) ~= true do
-				lastValue = self:get()
+			local lastValue = nil
+
+			while true do
+				local currentValue = self:get()
+				if currentValue ~= nil then
+					-- We need to check for `self:get() == currentValue` as it is possible
+					-- that the property may have been updated while `valuePredicate` was
+					-- running (incase `valuePredicate` yielded), otherwise we won't be able
+					-- to run the predicate for the latest value!
+					if
+						valuePredicate(currentValue, lastValue) == true
+						and self:get() == currentValue
+					then
+						resolve(currentValue)
+						return
+					end
+
+					lastValue = currentValue
+				end
+
 				self.onUpdate:Wait()
 			end
 		else
 			while self:get() == nil do
 				self.onUpdate:Wait()
 			end
-		end
 
-		resolve(self:get())
+			resolve(self:get())
+		end
 	end))
 end
 
