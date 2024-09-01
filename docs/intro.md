@@ -8,7 +8,7 @@ The opsn sourced libraries for Roblox can be installed via [Wally](https://wally
 
 ## Wally Setup
 
-Install [Wally](https://wally.run/) and once it is nstalled, run `wally init` on your project directory, and then add the various open-sourced modules that you need
+Install [Wally](https://wally.run/) and once it is installed, run `wally init` on your project directory, and then add the various open-sourced libraries that you need
 as wally dependencies. For e.g, the following may be a `wally.toml` file for a project that includes a `numberUtil` wally package:
 
 ```toml
