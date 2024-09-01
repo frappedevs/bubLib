@@ -27,7 +27,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [playerPolicyInfoUtil](https://babypatrick100.github.io/libraries/api/playerPolicyInfoUtil) | `playerPolicyInfoUtil = "bubshurb/playerpolicyinfoutil@1.0.0"` | `shared` |
 | [instanceReplicationUtil](https://babypatrick100.github.io/libraries/api/instanceReplicationUtil) | `instanceReplicationUtil = "bubshurb/instancereplicationutil@1.2.1"` | `shared` |
 | [contextActionServiceUtil](https://babypatrick100.github.io/libraries/api/contextActionServiceUtil) | `contextActionServiceUtil = "bubshurb/contextactionserviceutil@1.0.0"` | `shared` |
-| [playerUtil](https://babypatrick100.github.io/libraries/api/playerUtil) | `playerUtil = "bubshurb/playerUtil@1.0.0"` | `shared` |
+| [playerUtil](https://babypatrick100.github.io/libraries/api/playerUtil) | `playerUtil = "bubshurb/playerUtil@1.2.0"` | `shared` |
 | [playerCacheUtil](https://babypatrick100.github.io/libraries/api/playerCacheUtil) | `playerUtil = "bubshurb/playercacheutil@1.1.0"` | `shared` |
 | [promiseCleanupUtil](https://babypatrick100.github.io/libraries/api/promiseCleanupUtil) | `promiseCleanupUtil = "bubshurb/promisecleanuputil@1.2.2"` | `shared` |
 | [playerCharacterUtil](https://babypatrick100.github.io/libraries/api/playerCharacterUtil) | `playerCharacterUtil = "bubshurb/playerCharacterUtil@1.0.0"` | `shared` |
