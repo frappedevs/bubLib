@@ -4,6 +4,28 @@
     A very simple utility module for working with player humanoid walkspeed multipliers.
 ]=]
 
+--[=[ 
+    @prop PLAYER_BASE_HUMANOID_WALK_SPEED StarterPlayer.CharacterWalkSpeed
+    @tag Constant
+    @within playerHumanoidWalkSpeedUtil
+
+    [StarterPlayer.CharacterWalkSpeed](https://create.roblox.com/docs/reference/engine/classes/StarterPlayer#CharacterWalkSpeed)
+
+    :::warning Not Accessible
+    Constant, not accesible within `playerHumanoidWalkSpeedUtil`.
+    :::
+]=]
+
+--[=[ 
+    @prop PLAYER_BASE_HUMANOID_WALK_SPEED_MULTIPLIER 1
+    @tag Constant
+    @within playerHumanoidWalkSpeedUtil
+
+    :::warning Not Accessible
+    Constant, not accesible within `playerHumanoidWalkSpeedUtil`.
+    :::
+]=]
+
 local StarterPlayer = game:GetService("StarterPlayer")
 
 local instanceAttributeUtil = require(script.Parent.instanceAttributeUtil)
@@ -30,9 +52,29 @@ function playerHumanoidWalkSpeedUtil.updatedPlayerHumanoidWalkSpeed(player: Play
 
 	local speedDifference = (
 		thisPlayerHumanoidBaseWalkSpeed * thisPlayerHumanoidWalkSpeedMultiplier
-	) - thisPlayerHumanoidBaseWalkSpeed
+	) - humanoid.WalkSpeed
 
 	return humanoid.WalkSpeed + speedDifference
+end
+
+--[=[ 
+    Returns the default player humanoid base walk speed.
+
+    @return PLAYER_BASE_HUMANOID_WALK_SPEED
+]=]
+
+function playerHumanoidWalkSpeedUtil.defaultPlayerHumanoidBaseWalkSpeed(): number
+	return PLAYER_BASE_HUMANOID_WALK_SPEED
+end
+
+--[=[ 
+    Returns the default player humanoid walkspeed multiplier.
+
+    @return PLAYER_BASE_HUMANOID_WALK_SPEED_MULTIPLIER
+]=]
+
+function playerHumanoidWalkSpeedUtil.defaultPlayerHumanoidWalkSpeedMultiplier(): number
+	return PLAYER_BASE_HUMANOID_WALK_SPEED_MULTIPLIER
 end
 
 --[=[ 
