@@ -212,7 +212,7 @@ end
 
 	```lua
 	playerUtil.safeChatStatus(player):andThen(function(safeChatStatus)
-		print(safeChatStatus == playerUtil.playerSafeChatStatus.on)
+		print(safeChatStatus == playerUtil.PlayerSafeChatStatus.On)
 	end)
 	```
 ]=]
