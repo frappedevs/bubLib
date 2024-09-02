@@ -172,7 +172,7 @@ end
 --[=[ 
 	@tag CustomAnimator instance
 
-	Returns a read only copy array of all animations loaded into the animator object.
+	Returns a read only copy dictionary of all animations loaded into the animator object.
 ]=]
 
 function CustomAnimator.__index:all(): { [Animation]: AnimationTrack }
