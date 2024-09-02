@@ -1,8 +1,8 @@
 [package]
 name = "bubshurb/instanceutil"
-description = "An utility module for working with instances."
+description = "An utility module for working with base parts."
 authors = ["bubshurb"]
 license = "MIT"
-version = "1.1.0"
+version = "1.2.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
