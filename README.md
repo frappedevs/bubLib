@@ -74,7 +74,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [soundInitializerUtil](https://babypatrick100.github.io/libraries/api/soundInitializerUtil) | `soundInitializerUtil = "bubshurb/soundinitializerutil@1.0.0"` | `shared` |
 | [clientMovementInputUtil](https://babypatrick100.github.io/libraries/api/clientMovementInputUtil) | `clientMovementInputUtil = "bubshurb/clientmovementinpututil@1.0.0"` | `shared` |
 | [instancePropertyUtil](https://babypatrick100.github.io/libraries/api/instancePropertyUtil) | `instancePropertyUtil = "bubshurb/instancepropertyutil@1.0.0"` | `shared` |
-| [instanceNetworkOwnerUtil](https://babypatrick100.github.io/libraries/api/instanceNetworkOwnerUtil) | `instanceNetworkOwnerUtil = "bubshurb/instancenetworkownerutil@1.0.0"` | `shared` |
+| [instanceNetworkOwnerUtil](https://babypatrick100.github.io/libraries/api/instanceNetworkOwnerUtil) | `instanceNetworkOwnerUtil = "bubshurb/instancenetworkownerutil@1.0.0"` | `server` |
 
 
 ## License notice
