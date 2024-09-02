@@ -1,9 +1,9 @@
 [package]
-name = "bubshurb/playertroveutil"
-description = "An utility module for working with player troves."
+name = "bubshurb/instancetroveutil"
+description = "An utility module for working with instance troves."
 authors = ["bubshurb"]
 license = "MIT"
-version = "1.0.1"
+version = "1.0.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
