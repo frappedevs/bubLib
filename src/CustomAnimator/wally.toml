@@ -3,10 +3,11 @@ name = "bubshurb/customanimator"
 description = "A simple class for working with animations."
 authors = ["bubshurb"]
 license = "MIT"
-version = "1.4.0"
+version = "1.5.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
 [dependencies]
 Promise = "evaera/promise@4"
 Signal = "sleitnick/signal@2"
+instanceTroveUtil = "bubshurb/instancetroveutil@1"

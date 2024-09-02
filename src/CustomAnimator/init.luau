@@ -23,6 +23,7 @@
 
 local Promise = require(script.Parent.Promise)
 local Signal = require(script.Parent.Signal)
+local instanceTroveUtil = require(script.Parent.instanceTroveUtil)
 
 local ANIM_FADE_TIME_ATTRIBUTE = "FadeTime"
 local ANIM_WEIGHT_TIME_ATTRIBUTE = "Weight"
@@ -69,17 +70,23 @@ end
 
 	Returns a promise which is resolved once the given animation is loaded via [CustomAnimator:loadAnimation].
 
-	@return Promise<Animation>
+	:::note Automatic promise cancellation
+	The returned promise will be cancelled if the animator object or the animation controller object this custom
+	animator is connected to, is destroyed.
+	:::
+
+	@return Promise<AnimationTrack>
 ]=]
 
 function CustomAnimator.__index:onAnimationLoadPromise(animation: Animation)
-	return Promise.new(function(resolve)
+	local animatorTrove = instanceTroveUtil.instanceTrove(self._animator)
+	return animatorTrove:AddPromise(Promise.new(function(resolve)
 		while self._loadedAnimationTracks[animation] == nil do
 			self.onAnimationLoaded:Wait()
 		end
 
-		resolve(animation)
-	end)
+		resolve(self._loadedAnimationTracks[animation])
+	end))
 end
 
 --[=[ 
@@ -110,7 +117,7 @@ end
 	:::
 ]=]
 
-function CustomAnimator.__index:playAnimation(
+function CustomAnimator.__index:playLoadedAnimation(
 	animation: Animation,
 	fadeTime: number?,
 	weight: number?,
@@ -132,20 +139,40 @@ end
 
 --[=[ 
 	@tag CustomAnimator instance
+	@return Promise<>
 
-	Stops the given animation, if it has been loaded into the animator object via [CustomAnimator:loadAnimation].
+	Plays the given `animation` as soon as it is loaded into the custom animator.
+
+	:::note Automatic promise cancellation
+	The returned promise will be cancelled if the animator object or the animation controller object this custom
+	animator is connected to, is destroyed.
+	:::
+]=]
+
+function CustomAnimator.__index:playAnimationOnLoad(
+	animation: Animation,
+	fadeTime: number?,
+	weight: number?,
+	speed: number?
+): AnimationTrack?
+	return self:onAnimationLoadPromise(animation):andThen(function()
+		self:playLoadedAnimation(animation, fadeTime, weight, speed)
+	end)
+end
+
+--[=[ 
+	@tag CustomAnimator instance
+
+	Stops the given animation, if it has been loaded into the custom animator object.
 
 	:::tip
-	You can also setup an attribute for `fadeTime` in the animation object, which will be used incase the argument isn't specified.
+	You can also setup an attribute for `fadeTime` in the animation object, which will be used incase `fadeTime` isn't specified.
 
 	- `fadeTime` -> `FadeTime`
 	:::
 ]=]
 
-function CustomAnimator.__index:stopAnimation(
-	animation: Animation,
-	fadeTime: number?
-): AnimationTrack
+function CustomAnimator.__index:stopLoadedAnimation(animation: Animation, fadeTime: number?)
 	local animationTrack: AnimationTrack = self:animationTrack(animation)
 	assert(
 		animationTrack,
@@ -154,7 +181,23 @@ function CustomAnimator.__index:stopAnimation(
 
 	fadeTime = fadeTime or animation:GetAttribute(ANIM_FADE_TIME_ATTRIBUTE)
 	animationTrack:Stop(fadeTime)
-	return animationTrack
+end
+
+--[=[ 
+	@tag CustomAnimator instance
+
+	Works almost exactly the same as [CustomAnimator:stopLoadedAnimation], but does not error if `animation`
+	is not loaded into the custom animator.
+]=]
+
+function CustomAnimator.__index:tryStopAnimation(animation: Animation, fadeTime: number?)
+	local animationTrack: AnimationTrack = self:animationTrack(animation)
+	if animationTrack == nil then
+		return
+	end
+
+	fadeTime = fadeTime or animation:GetAttribute(ANIM_FADE_TIME_ATTRIBUTE)
+	animationTrack:Stop(fadeTime)
 end
 
 --[=[ 
