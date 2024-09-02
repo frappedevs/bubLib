@@ -1,6 +1,6 @@
 -- Component
 -- Stephen Leitnick
--- Modifications by bubshurb
+-- Modifications by babypatrick100
 -- November 26, 2021
 
 type AncestorList = { Instance }
@@ -185,6 +185,11 @@ local DEFAULT_ANCESTORS = { Workspace, Players, Lighting }
 local DEFAULT_TIMEOUT = 60
 local COMPONENT_LIFECYLE_METHOD_DEBUG = "%s [%s]"
 local COMPONENT_MEM_TAG = "%s (%s)"
+local RUN_SERVICE_EVENTS_TO_CONNECT = {
+	steppedUpdate = RunService.Stepped,
+	heartbeatUpdate = RunService.Heartbeat,
+	renderSteppedUpdate = if RunService:IsClient() then RunService.RenderStepped else nil,
+}
 
 -- Symbol keys:
 local KEY_ANCESTORS = Symbol("ancestors")
@@ -198,7 +203,8 @@ local KEY_STARTED = Symbol("started")
 local START_PROMISE = Symbol("START_PROMISE")
 local CONSTRUCT_PROMISE = Symbol("CONSTRUCT_PROMISE")
 
-local instancesConstructing = {}
+local instancesConstructingPromises = {}
+local components = {}
 
 local function NextRenderName(): string
 	return "ComponentRender" .. HttpService:GenerateGUID()
@@ -217,8 +223,8 @@ local function shouldConstruct(component): boolean
 	for _, extension in component[KEY_ACTIVE_EXTENSIONS] do
 		local fn = extension.shouldConstruct
 		if type(fn) == "function" then
-			local shouldConstructComponent = fn(component)
-			if not shouldConstructComponent then
+			local shouldConstruct = fn(component)
+			if not shouldConstruct then
 				return false
 			end
 		end
@@ -248,7 +254,8 @@ end
 	Bind components to Roblox instances using the Component class and CollectionService tags.
 
 	:::note
-	The Component class is made by `Sleitnick`, this version is just a slightly modified version of it.
+	The Component class is made by `sleitnick`, this is just a modified variant of it which includes
+	case changes (from PascalCase to camelCase), bug & edgecase fixes and performance improvements.
 	:::
 
 	To avoid confusion of terms:
@@ -286,7 +293,7 @@ Component.__index = Component
 	local AnotherComponent = require(somewhere.AnotherComponent)
 
 	-- Optional if UpdateRenderStepped should use BindToRenderStep:
-	MyComponent.RenderPriority = Enum.RenderPriority.Camera.Value
+	MyComponent.renderPriority = Enum.renderPriority.Camera.Value
 
 	function MyComponent:construct()
 		self.MyData = "Hello"
@@ -333,26 +340,26 @@ end
 
 function Component:_instantiate(instance: Instance)
 	local constructedSignal = Signal.new()
-	instancesConstructing[instance] = instancesConstructing[instance] or {}
+	instancesConstructingPromises[instance] = instancesConstructingPromises[instance] or {}
 
-	local thisPromise
+	local thisPromise = nil
 	thisPromise = Promise.new(function(resolve)
 		constructedSignal:Wait()
 		constructedSignal:Destroy()
 
 		table.remove(
-			instancesConstructing[instance],
-			table.find(instancesConstructing[instance], thisPromise)
+			instancesConstructingPromises[instance],
+			table.find(instancesConstructingPromises[instance], thisPromise)
 		)
 
-		if #instancesConstructing[instance] == 0 then
-			instancesConstructing[instance] = nil
+		if #instancesConstructingPromises[instance] == 0 then
+			instancesConstructingPromises[instance] = nil
 		end
 
 		task.defer(resolve)
 	end)
 
-	table.insert(instancesConstructing[instance], thisPromise)
+	table.insert(instancesConstructingPromises[instance], thisPromise)
 
 	local component = setmetatable({}, self)
 	component.instance = instance
@@ -389,59 +396,16 @@ function Component:_setup()
 			resolve(component:start())
 		end)
 			:andThen(function()
+				table.insert(components, component)
 				InvokeExtensionFn(component, self, "started")
-				local hasHeartbeatUpdate = typeof(component.heartbeatUpdate) == "function"
-				local hasSteppedUpdate = typeof(component.steppedUpdate) == "function"
+
 				local hasRenderSteppedUpdate = typeof(component.renderSteppedUpdate) == "function"
-
-				if hasHeartbeatUpdate then
-					component._heartbeatUpdate = RunService.Heartbeat:Connect(function(...)
-						debug.profilebegin(
-							string.format(
-								COMPONENT_LIFECYLE_METHOD_DEBUG,
-								tostring(component),
-								"heartbeatUpdate"
-							)
-						)
-						component:heartbeatUpdate(...)
-						debug.profileend()
-					end)
-				end
-
-				if hasSteppedUpdate then
-					component._steppedUpdate = RunService.Stepped:Connect(function(...)
-						debug.profilebegin(
-							string.format(
-								COMPONENT_LIFECYLE_METHOD_DEBUG,
-								tostring(component),
-								"steppedUpdate"
-							)
-						)
-						component:steppedUpdate(...)
-						debug.profileend()
-					end)
-				end
-
 				if hasRenderSteppedUpdate and not IS_SERVER then
-					if component.RenderPriority then
+					if component.renderPriority then
 						component._renderName = NextRenderName()
 						RunService:BindToRenderStep(
 							component._renderName,
-							component.RenderPriority,
-							function(...)
-								debug.profilebegin(
-									string.format(
-										COMPONENT_LIFECYLE_METHOD_DEBUG,
-										tostring(component),
-										"renderSteppedUpdate"
-									)
-								)
-								component:renderSteppedUpdate(...)
-								debug.profileend()
-							end
-						)
-					else
-						component._renderSteppedUpdate = RunService.RenderStepped:Connect(
+							component.renderPriority,
 							function(...)
 								debug.profilebegin(
 									string.format(
@@ -456,6 +420,7 @@ function Component:_setup()
 						)
 					end
 				end
+
 				component[KEY_STARTED] = true
 				self.started:Fire(component)
 			end)
@@ -465,17 +430,9 @@ function Component:_setup()
 	end
 
 	local function StopComponent(component)
-		if component._heartbeatUpdate then
-			component._heartbeatUpdate:Disconnect()
-		end
+		table.remove(components, table.find(components, component))
 
-		if component._steppedUpdate then
-			component._steppedUpdate:Disconnect()
-		end
-
-		if component._renderSteppedUpdate then
-			component._renderSteppedUpdate:Disconnect()
-		elseif component._renderName then
+		if component._renderName ~= nil then
 			RunService:UnbindFromRenderStep(component._renderName)
 		end
 
@@ -519,9 +476,9 @@ function Component:_setup()
 
 			task.defer(function()
 				if self[KEY_INST_TO_COMPONENTS][instance] == component then
-					if instancesConstructing[instance] then
-						while instancesConstructing[instance] do
-							instancesConstructing[instance][1]:expect()
+					if instancesConstructingPromises[instance] then
+						while instancesConstructingPromises[instance] do
+							instancesConstructingPromises[instance][1]:expect()
 						end
 					end
 
@@ -611,7 +568,8 @@ end
 --[=[
 	@tag Component Class
 	@return {Component}
-	Gets a table array of all existing component objects. For example,
+
+	Gets a copy table array of all existing component objects. For example,
 	if there was a component class linked to the "MyComponent" tag,
 	and three Roblox instances in your game had that same tag, then
 	calling `all` would return the three component instances.
@@ -628,7 +586,7 @@ end
 	```
 ]=]
 function Component:all()
-	return self[KEY_COMPONENTS]
+	return table.clone(self[KEY_COMPONENTS])
 end
 
 --[=[
@@ -778,6 +736,12 @@ end
 	If this method is present on a component, then it will be
 	automatically connected to `RunService.Heartbeat`.
 
+	:::tip 
+	`Component` will only ever hook up 1 heartbeat connection for **every single component instance**. As of writing,
+	in sleitnick's variant, a heartbeat connection is hooked up for **each component instance**, which is not scalable for large
+	scale operations.
+	:::
+
 	:::note Method
 	This is a method, not a function. This is a limitation
 	of the documentation tool which should be fixed soon.
@@ -800,6 +764,12 @@ end
 	If this method is present on a component, then it will be
 	automatically connected to `RunService.Stepped`.
 
+	:::tip 
+	`Component` will only ever hook up 1 stepped connection for **every single component instance**. As of writing,
+	in sleitnick's variant, a stepped connection is hooked up for **each component instance**, which is not scalable for large
+	scale operations.
+	:::
+
 	:::note Method
 	This is a method, not a function. This is a limitation
 	of the documentation tool which should be fixed soon.
@@ -821,9 +791,18 @@ end
 
 	If this method is present on a component, then it will be
 	automatically connected to `RunService.RenderStepped`. If
-	the `[Component].RenderPriority` field is found, then the
+	the `[Component].renderPriority` field is found, then the
 	component will instead use `RunService:BindToRenderStep()`
 	to bind the function.
+
+	:::tip 
+	`Component` will only ever hook up 1 render stepped connection for **every single component instance**. 
+	As of writing, in sleitnick's variant, a render stepped connection is hooked up for **each component instance** , 
+	which is not scalable for large scale operations.
+
+	However, if `renderPriority` is specified, then a new render stepped connection will be hooked up for the component
+	instance.
+	:::
 
 	:::note Method
 	This is a method, not a function. This is a limitation
@@ -843,8 +822,8 @@ end
 	
 	local MyComponent = Component.new({tag = "MyComponent"})
 
-	-- Defining a RenderPriority will force the component to use BindToRenderStep instead
-	MyComponent.RenderPriority = Enum.RenderPriority.Camera.Value
+	-- Defining a renderPriority will force the component to use BindToRenderStep instead
+	MyComponent.renderPriority = Enum.renderPriority.Camera.Value
 	
 	function MyComponent:renderSteppedUpdate(dt)
 	end
@@ -853,6 +832,34 @@ end
 
 function Component:destroy()
 	self[KEY_TROVE]:destroy()
+end
+
+for callbackIdentifier, event in RUN_SERVICE_EVENTS_TO_CONNECT do
+	event:Connect(function(...)
+		for _, component in components do
+			if typeof(component[callbackIdentifier]) ~= "function" then
+				continue
+			end
+
+			-- Components with `renderPriority` set will have
+			if
+				callbackIdentifier == RUN_SERVICE_EVENTS_TO_CONNECT.renderSteppedUpdate
+				and component.renderPriority ~= nil
+			then
+				continue
+			end
+
+			debug.profilebegin(
+				string.format(
+					COMPONENT_LIFECYLE_METHOD_DEBUG,
+					tostring(component),
+					callbackIdentifier
+				)
+			)
+			component[callbackIdentifier](component, ...)
+			debug.profileend()
+		end
+	end)
 end
 
 return Component
