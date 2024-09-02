@@ -83,4 +83,36 @@ function instanceTagUtil.instanceTagPromise(instance: Instance, tag: string)
 	return promise
 end
 
+--[=[
+	Adds all tags in `tags` to the given instance as [CollectionService](https://create.roblox.com/docs/reference/engine/classes/CollectionService) tags.
+
+	```lua
+	instanceTagUtil.addTagsToInstance(workspace.Baseplate, {"Test"})
+	print(CollectionService:HasTag(workspace.Baseplate, "Test")) --> true
+	```
+]=]
+
+function instanceTagUtil.addTagsToInstance(instance: Instance, tags: { string })
+	for _, tag in tags do
+		CollectionService:AddTag(instance, tag)
+	end
+end
+
+--[=[
+	Removes all tags in `tags` (which were tagged to the given instance as [CollectionService](https://create.roblox.com/docs/reference/engine/classes/CollectionService) tags) from the given instance.
+
+	```lua
+	instanceTagUtil.addTagsToInstance(workspace.Baseplate, {"Test"})
+	print(CollectionService:HasTag(workspace.Baseplate, "Test")) --> true
+	instanceTagUtil.removeTagsFromInstance(workspace.Baseplate, {"Test"})
+	print(CollectionService:HasTag(workspace.Baseplate, "Test")) --> false
+	```
+]=]
+
+function instanceTagUtil.removeTagsFromInstance(instance: Instance, tags: { string })
+	for _, tag in tags do
+		CollectionService:RemoveTag(instance, tag)
+	end
+end
+
 return table.freeze(instanceTagUtil)
