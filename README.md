@@ -12,12 +12,12 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [Component](https://babypatrick100.github.io/libraries/api/Component) | `Component = "bubshurb/component@1.2.1` | `shared` |
 | [Hover](https://babypatrick100.github.io/libraries/api/Hover) | `Hover = "bubshurb/hover@1.1.0` | `shared` |
 | [ContentProviderQueue](https://babypatrick100.github.io/libraries/api/ContentProviderQueue) | `ContentProviderQueue = "bubshurb/contentproviderqueue@1.1.0"` | `shared` |
-| [CustomAnimator](https://babypatrick100.github.io/libraries/api/CustomAnimator) | `CustomAnimator = "bubshurb/customanimator@1.3.0"` | `shared` |
+| [CustomAnimator](https://babypatrick100.github.io/libraries/api/CustomAnimator) | `CustomAnimator = "bubshurb/customanimator@1.4.0"` | `shared` |
 | [Property](https://babypatrick100.github.io/libraries/api/Property) | `Property = "bubshurb/property@2.4.1"` | `shared` |
 | [network](https://babypatrick100.github.io/libraries/api/network) | `network = "bubshurb/network@2.4.1"` | `shared` |
 | [windLines](https://babypatrick100.github.io/libraries/api/windLines) | `windLines = "bubshurb/windlines@1.0.0"` | `shared` |
 | [matrixUtil](https://babypatrick100.github.io/libraries/api/matrixUtil) | `matrixUtil = "bubshurb/matrixutil@1.0.0"` | `shared` |
-| [instanceUtil](https://babypatrick100.github.io/libraries/api/InstanceUtil) | `instanceUtil = "bubshurb/instanceutil@1.1.0"` | `shared` |
+| [basePartUtil](https://babypatrick100.github.io/libraries/api/basePartUtil) | `basePartUtil = "bubshurb/basepartutil@1.0.0"` | `shared` |
 | [numberUtil](https://babypatrick100.github.io/libraries/api/numberUtil) | `numberUtil = "bubshurb/numberutil@1.1.0"` | `shared` |
 | [colorSequenceUtil](https://babypatrick100.github.io/libraries/api/colorSequenceUtil) | `colorSequenceUtil = "bubshurb/colorsequenceutil@1.0.0"` | `shared` |
 | [throttleUtil](https://babypatrick100.github.io/libraries/api/throttleUtil) | `throttleUtil = "bubshurb/throttleutil@1.0.0"` | `shared` |
@@ -29,7 +29,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [instanceReplicationUtil](https://babypatrick100.github.io/libraries/api/instanceReplicationUtil) | `instanceReplicationUtil = "bubshurb/instancereplicationutil@1.2.1"` | `shared` |
 | [contextActionServiceUtil](https://babypatrick100.github.io/libraries/api/contextActionServiceUtil) | `contextActionServiceUtil = "bubshurb/contextactionserviceutil@1.0.0"` | `shared` |
 | [playerUtil](https://babypatrick100.github.io/libraries/api/playerUtil) | `playerUtil = "bubshurb/playerUtil@1.2.0"` | `shared` |
-| [playerCacheUtil](https://babypatrick100.github.io/libraries/api/playerCacheUtil) | `playerUtil = "bubshurb/playercacheutil@1.1.0"` | `shared` |
+| [perInstanceDataCacheUtil](https://babypatrick100.github.io/libraries/api/perInstanceDataCacheUtil) | `perInstanceDataCacheUtil = "bubshurb/perinstancedatacacheutil@1.0.0"` | `shared` |
 | [promiseCleanupUtil](https://babypatrick100.github.io/libraries/api/promiseCleanupUtil) | `promiseCleanupUtil = "bubshurb/promisecleanuputil@1.2.2"` | `shared` |
 | [playerCharacterUtil](https://babypatrick100.github.io/libraries/api/playerCharacterUtil) | `playerCharacterUtil = "bubshurb/playerCharacterUtil@1.0.0"` | `shared` |
 | [debugLoggerUtil](https://babypatrick100.github.io/libraries/api/debugLoggerUtil) | `debugLoggerUtil = "bubshurb/debugLoggerUtil@1.0.0"` | `shared` |
@@ -42,7 +42,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [colorUtil](https://babypatrick100.github.io/libraries/api/colorUtil) | `colorUtil = "bubshurb/colorutil@1.1.2"` | `shared` |
 | [serializerUtil](https://babypatrick100.github.io/libraries/api/serializerUtil) | `serializerUtil = "bubshurb/serializerutil@1.1.0"` | `shared` |
 | [instanceTrackerUtil](https://babypatrick100.github.io/libraries/api/instanceTrackerUtil) | `instanceTrackerUtil = "bubshurb/instancetrackerutil@1.2.1"` | `shared` |
-| [instanceAttributeUtil](https://babypatrick100.github.io/libraries/api/instanceAttributeUtil) | `instanceAttributeUtil = "bubshurb/instanceattributeutil@1.2.0"` | `shared` |
+| [instanceAttributeUtil](https://babypatrick100.github.io/libraries/api/instanceAttributeUtil) | `instanceAttributeUtil = "bubshurb/instanceattributeutil@1.3.0"` | `shared` |
 | [instanceTagUtil](https://babypatrick100.github.io/libraries/api/instanceTagUtil) | `instanceTagUtil = "bubshurb/instancetagutil@1.0.2"` | `shared` |
 | [numberUnitUtil](https://babypatrick100.github.io/libraries/api/numberUnitUtil) | `numberUnitUtil = "bubshurb/numberunitutil@1.0.0"` | `shared` |
 | [playersUtil](https://babypatrick100.github.io/libraries/api/playersUtil) | `playersUtil = "bubshurb/playersutil@1.2.1"` | `shared` |
@@ -66,13 +66,16 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [robuxConversionUtil](https://babypatrick100.github.io/libraries/api/robuxConversionUtil) | `robuxConversionUtil = "bubshurb/robuxconversionutil@1.0.0"` | `shared` |
 | [infoTypeUtil](https://babypatrick100.github.io/libraries/api/infoTypeUtil) | `infoTypeUtil = "bubshurb/infotypeutil@1.0.0"` | `shared` |
 | [seatUtil](https://babypatrick100.github.io/libraries/api/seatUtil) | `seatUtil = "bubshurb/seatutil@1.0.0"` | `shared` |
-| [playerHumanoidUtil](https://babypatrick100.github.io/libraries/api/playerHumanoidUtil) | `playerHumanoidUtil = "bubshurb/playerhumanoidutil@1.2.1"` | `shared` |
+| [playerHumanoidUtil](https://babypatrick100.github.io/libraries/api/playerHumanoidUtil) | `playerHumanoidUtil = "bubshurb/playerhumanoidutil@1.3.0"` | `shared` |
 | [propertyUtil](https://babypatrick100.github.io/libraries/api/propertyUtil) | `propertyUtil = "bubshurb/propertyutil@1.0.1"` | `shared` |
 | [playerCharacterAccessoryUtil](https://babypatrick100.github.io/libraries/api/playerCharacterAccessoryUtil) | `playerCharacterAccessoryUtil = "bubshurb/playercharacteraccessoryUtil@1.0.0"` | `shared` |
 | [evLightning](https://babypatrick100.github.io/libraries/api/evLightning) | `evLightning = "bubshurb/evlightning@1.0.0"` | `shared` |
 | [playerEventsUtil](https://babypatrick100.github.io/libraries/api/playerEventsUtil) | `playerEventsUtil = "bubshurb/playereventsutil@1.1.0"` | `shared` |
 | [soundInitializerUtil](https://babypatrick100.github.io/libraries/api/soundInitializerUtil) | `soundInitializerUtil = "bubshurb/soundinitializerutil@1.0.0"` | `shared` |
 | [clientMovementInputUtil](https://babypatrick100.github.io/libraries/api/clientMovementInputUtil) | `clientMovementInputUtil = "bubshurb/clientmovementinpututil@1.0.0"` | `shared` |
+| [instancePropertyUtil](https://babypatrick100.github.io/libraries/api/instancePropertyUtil) | `instancePropertyUtil = "bubshurb/instancepropertyutil@1.0.0"` | `shared` |
+| [instanceNetworkOwnerUtil](https://babypatrick100.github.io/libraries/api/instanceNetworkOwnerUtil) | `instanceNetworkOwnerUtil = "bubshurb/instancenetworkownerutil@1.0.0"` | `shared` |
+
 
 ## License notice
 
