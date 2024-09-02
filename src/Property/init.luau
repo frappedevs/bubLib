@@ -73,6 +73,8 @@ function Property.is(self: any): boolean
 end
 
 --[=[
+	@tag Property Instance
+	
 	Creates a new property and binds it to the current property, and returns the new
 	property. The new property will operate on the value of the current property, however
 	you may specify a `mapper` function for more control. The `mapper` function will be 
@@ -107,6 +109,8 @@ function Property.__index:clone(mapper: ((newValue: any, oldValue: any) -> any)?
 end
 
 --[=[
+	@tag Property Instance
+
 	Binds the property to a property of the given Roblox instance. When the instance is destroyed,
 	the property is automatically destroyed as well.
 
@@ -136,6 +140,8 @@ function Property.__index:bindToInstanceProperty(instance: Instance, property: s
 end
 
 --[=[
+	@tag Property Instance
+
 	Binds the property to an attribute of the given Roblox instance. When the instance is destroyed,
 	the property is automatically destroyed as well.
 
@@ -160,6 +166,8 @@ function Property.__index:bindToInstanceAttribute(instance: Instance, attribute:
 end
 
 --[=[
+	@tag Property Instance
+
 	Binds the property to an instance so that once the instance is destroyed,
 	the property will be destroyed too.
 
@@ -184,6 +192,8 @@ function Property.__index:bindToInstance(instance: Instance)
 end
 
 --[=[
+	@tag Property Instance
+
 	Sets the value of the property to `value`, if this new value isn't the same as the previous value. 
 ]=]
 
@@ -199,6 +209,8 @@ function Property.__index:set(value: any)
 end
 
 --[=[
+	@tag Property Instance
+
 	Observes the value of the property. 
 
 	```lua
@@ -224,6 +236,8 @@ function Property.__index:observe(callback: (newValue: any, oldValue: any) -> ()
 end
 
 --[=[
+	@tag Property Instance
+
 	Returns a promise which is resolved with a non-nil value of the property, given that
 	`valuePredicate` is not passed as an argument.
 
@@ -322,6 +336,8 @@ function Property.__index:forceSet(value: any)
 end
 
 --[=[
+	@tag Property Instance
+
 	Works almost the same as [Property:set], but never fires off the [Property.onUpdate] signal.
 ]=]
 
@@ -346,6 +362,8 @@ function Property.__index:get(): any
 end
 
 --[=[
+	@tag Property Instance
+
 	Destroys the property and renders it unusable.
 ]=]
 

@@ -556,6 +556,8 @@ function NetworkServer.is(self: any): boolean
 end
 
 --[=[
+	@tag NetworkServer instance
+
 	Returns a boolean indicating if the network object is dispatched to the 
 	client or not. 
 ]=]
@@ -565,6 +567,8 @@ function NetworkServer.__index:dispatched(): boolean
 end
 
 --[=[
+	@tag NetworkServer instance
+
 	Appends a key-value pair, `key` and `value`, to the network object, so that
 	it is available to the client once the network object is dispatched. 
 
@@ -619,6 +623,8 @@ function NetworkServer.__index:append(
 end
 
 --[=[
+	@tag NetworkServer instance
+
 	Dispatches the network folder of the network object to `parent`, rendering
 	the network object accessible to the client now. 
 
@@ -650,6 +656,8 @@ function NetworkServer.__index:dispatch(parent: Instance)
 end
 
 --[=[
+	@tag NetworkServer instance
+	
 	Destroys the network object and all appended remote properties &
 	remote signals within the network object, and renders the network 
 	object useless. 

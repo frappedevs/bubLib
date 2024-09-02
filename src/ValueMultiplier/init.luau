@@ -26,6 +26,8 @@ local ValueMultiplier = {}
 ValueMultiplier.__index = ValueMultiplier
 
 --[=[ 
+	@tag ValueMultiplier Instance
+
 	Creates and returns a new value multiplier object. If `multiplier` is not specified, it'll default to
 	[ValueMultiplier.DEFAULT_MULTIPLIER].
 
@@ -88,6 +90,7 @@ function ValueMultiplier.fromIdentifierPromise(identifier: any)
 end
 
 --[=[ 
+	@tag ValueMultiplier Instance
 	@return Connection
 	
 	Observes for a new value multiplier created under the given `identifier`. If one
@@ -128,6 +131,8 @@ function ValueMultiplier.observeForIdentifier(
 end
 
 --[=[ 
+	@tag ValueMultiplier Instance
+
 	Returns the current value of the value multiplier adjusted based off of the multiplier and
 	the base value. If no base value is set, then just the current value will be returned instead.
 
@@ -158,6 +163,8 @@ function ValueMultiplier.__index:updatedValue(): number
 end
 
 --[=[ 
+   @tag ValueMultiplier Instance
+
    Sets the value multiplier's value to `newValue`.
 ]=]
 
@@ -166,6 +173,8 @@ function ValueMultiplier.__index:setValue(newValue: number)
 end
 
 --[=[ 
+   @tag ValueMultiplier Instance
+
    Sets the value multiplier's base value to `baseValue`.
 ]=]
 
@@ -174,6 +183,8 @@ function ValueMultiplier.__index:setBaseValue(baseValue: number)
 end
 
 --[=[ 
+	@tag ValueMultiplier Instance
+
 	Sets the value multiplier's multiplier to `newMultiplier`.
 ]=]
 
@@ -182,6 +193,8 @@ function ValueMultiplier.__index:setMultiplier(newMultiplier: number)
 end
 
 --[=[ 
+   @tag ValueMultiplier Instance
+
    Returns the multiplier set for the value multiplier.
 ]=]
 
@@ -190,6 +203,8 @@ function ValueMultiplier.__index:multiplier(): number
 end
 
 --[=[ 
+	@tag ValueMultiplier Instance
+
 	Returns the base value of the value multiplier.
 ]=]
 
@@ -198,6 +213,8 @@ function ValueMultiplier.__index:baseValue(): number?
 end
 
 --[=[ 
+	@tag ValueMultiplier Instance
+
 	Destroys the value multiplier and renders it unusable.
 ]=]
 
