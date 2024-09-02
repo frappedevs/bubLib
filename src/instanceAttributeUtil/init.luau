@@ -65,6 +65,8 @@ end
 	Sets up an event connection which listens to any descendant added to `instanceTree`, if it has the
 	`desiredAttribute` atribute, then `callback` will be called. 
 
+	This method will also capture initial descendants of the given `instanceTree` as well.
+
 	```lua
 	instanceAttributeUtil.new(workspace, "Test", function(instance)
 		print(instance)
@@ -77,6 +79,12 @@ function instanceAttributeUtil.new(
 	desiredAttribute: string,
 	callback: (descendant: Instance) -> ()
 ): RBXScriptConnection
+	for _, descendant in instanceTree:GetDescendants() do
+		if descendant:GetAttribute(desiredAttribute) ~= nil then
+			task.spawn(callback, descendant)
+		end
+	end
+
 	return instanceTree.DescendantAdded:Connect(function(descendant)
 		if descendant:GetAttribute(desiredAttribute) ~= nil then
 			callback(descendant)
