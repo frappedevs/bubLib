@@ -6,6 +6,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | -- | -- | -- |
 | [ViewportModel](https://babypatrick100.github.io/libraries/api/ViewportModel) | `ViewportModel = "bubshurb/viewportmodel@1.1.0` | `shared` |
 | [ZonePlus](https://babypatrick100.github.io/libraries/api/ZonePlus) | `ZonePlus = "bubshurb/zoneplus@1.1.1` | `shared` |
+| [ValueMultiplier](https://babypatrick100.github.io/libraries/api/ValueMultiplier) | `ValueMultiplier = "bubshurb/valuemultiplier@1.0.0` | `shared` |
 | [Connection](https://babypatrick100.github.io/libraries/api/Connection) | `Connection = "bubshurb/connection@1.0.0` | `shared` |
 | [Matcher](https://babypatrick100.github.io/libraries/api/Matcher) | `Matcher = "bubshurb/matcher@1.0.0` | `shared` |
 | [Component](https://babypatrick100.github.io/libraries/api/Component) | `Component = "bubshurb/component@1.1.1` | `shared` |
@@ -70,8 +71,6 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [playerCharacterAccessoryUtil](https://babypatrick100.github.io/libraries/api/playerCharacterAccessoryUtil) | `playerCharacterAccessoryUtil = "bubshurb/playercharacteraccessoryUtil@1.0.0"` | `shared` |
 | [evLightning](https://babypatrick100.github.io/libraries/api/evLightning) | `evLightning = "bubshurb/evlightning@1.0.0"` | `shared` |
 | [playerEventsUtil](https://babypatrick100.github.io/libraries/api/playerEventsUtil) | `playerEventsUtil = "bubshurb/playereventsutil@1.1.0"` | `shared` |
-| [playerHumanoidWalkSpeedUtil](https://babypatrick100.github.io/libraries/api/playerHumanoidWalkSpeedUtil) | `playerHumanoidWalkSpeedUtil = "bubshurb/playerhumanoidwalkspeedutil@1.1.0"` | `shared` |
-
 
 ## License notice
 
