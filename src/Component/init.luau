@@ -190,6 +190,7 @@ local RUN_SERVICE_EVENTS_TO_CONNECT = {
 	heartbeatUpdate = RunService.Heartbeat,
 	renderSteppedUpdate = if RunService:IsClient() then RunService.RenderStepped else nil,
 }
+local COMPONENTS_BOUND_TO_SAME_INSTANCE_CONSTRUCT_EXPECTED_INTERVAl = 10
 
 -- Symbol keys:
 local KEY_ANCESTORS = Symbol("ancestors")
@@ -203,8 +204,8 @@ local KEY_STARTED = Symbol("started")
 local START_PROMISE = Symbol("START_PROMISE")
 local CONSTRUCT_PROMISE = Symbol("CONSTRUCT_PROMISE")
 
-local instancesConstructingPromises = {}
-local components = {}
+local componentsConstructingPromises = {}
+local globalComponents = {}
 
 local function NextRenderName(): string
 	return "ComponentRender" .. HttpService:GenerateGUID()
@@ -223,8 +224,8 @@ local function shouldConstruct(component): boolean
 	for _, extension in component[KEY_ACTIVE_EXTENSIONS] do
 		local fn = extension.shouldConstruct
 		if type(fn) == "function" then
-			local shouldConstruct = fn(component)
-			if not shouldConstruct then
+			local shouldConstructComponent = fn(component)
+			if not shouldConstructComponent then
 				return false
 			end
 		end
@@ -339,33 +340,10 @@ function Component.new(config: ComponentConfig)
 end
 
 function Component:_instantiate(instance: Instance)
-	local constructedSignal = Signal.new()
-	instancesConstructingPromises[instance] = instancesConstructingPromises[instance] or {}
-
-	local thisPromise = nil
-	thisPromise = Promise.new(function(resolve)
-		constructedSignal:Wait()
-		constructedSignal:Destroy()
-
-		table.remove(
-			instancesConstructingPromises[instance],
-			table.find(instancesConstructingPromises[instance], thisPromise)
-		)
-
-		if #instancesConstructingPromises[instance] == 0 then
-			instancesConstructingPromises[instance] = nil
-		end
-
-		task.defer(resolve)
-	end)
-
-	table.insert(instancesConstructingPromises[instance], thisPromise)
-
 	local component = setmetatable({}, self)
 	component.instance = instance
 	component[KEY_ACTIVE_EXTENSIONS] = GetActiveExtensions(component, self[KEY_EXTENSIONS])
 	if not shouldConstruct(component) then
-		constructedSignal:Fire()
 		return nil
 	end
 	InvokeExtensionFn(component, self, "constructing")
@@ -373,12 +351,21 @@ function Component:_instantiate(instance: Instance)
 		self[CONSTRUCT_PROMISE] = Promise.new(function(resolve)
 			resolve(component:construct())
 		end)
-
-		self[CONSTRUCT_PROMISE]:expect()
 	end
 
+	componentsConstructingPromises[component.instance] = componentsConstructingPromises[component.instance]
+		or {}
+	componentsConstructingPromises[component.instance][component] = component
+
+	component[CONSTRUCT_PROMISE]:finally(function()
+		componentsConstructingPromises[component.instance][component] = nil
+		if next(componentsConstructingPromises[component.instance]) == nil then
+			componentsConstructingPromises[component.instance] = nil
+		end
+	end)
+
+	self[CONSTRUCT_PROMISE]:expect()
 	InvokeExtensionFn(component, self, "constructed")
-	constructedSignal:Fire()
 	return component
 end
 
@@ -386,17 +373,45 @@ function Component:_setup()
 	local watchingInstances = {}
 
 	local function StartComponent(component)
+		while componentsConstructingPromises[component.instance] ~= nil do
+			local _, thisComponent = next(componentsConstructingPromises[component.instance])
+
+			local componentStartupWaitThread = task.delay(
+				COMPONENTS_BOUND_TO_SAME_INSTANCE_CONSTRUCT_EXPECTED_INTERVAl,
+				function()
+					warn(
+						string.format(
+							"%s [%s] waiting for component %s [%s] to construct. [%.2fs~ elapsed]",
+							tostring(component),
+							component.instance:GetFullName(),
+							tostring(thisComponent),
+							thisComponent.instance:GetFullName(),
+							COMPONENTS_BOUND_TO_SAME_INSTANCE_CONSTRUCT_EXPECTED_INTERVAl
+						)
+					)
+				end
+			)
+
+			thisComponent[CONSTRUCT_PROMISE]:await()
+			task.cancel(componentStartupWaitThread)
+		end
+
+		-- The component was already destroyed by the time we have finished waiting
+		-- for other components bound to the same instance to construct.
+		if self[KEY_INST_TO_COMPONENTS][component.instance] == nil then
+			return
+		end
+
 		debug.setmemorycategory(
 			string.format(COMPONENT_MEM_TAG, tostring(component), component.instance.Name)
 		)
-
 		InvokeExtensionFn(component, self, "starting")
 
 		component[START_PROMISE] = Promise.new(function(resolve)
 			resolve(component:start())
 		end)
 			:andThen(function()
-				table.insert(components, component)
+				table.insert(globalComponents, component)
 				InvokeExtensionFn(component, self, "started")
 
 				local hasRenderSteppedUpdate = typeof(component.renderSteppedUpdate) == "function"
@@ -430,7 +445,7 @@ function Component:_setup()
 	end
 
 	local function StopComponent(component)
-		table.remove(components, table.find(components, component))
+		table.remove(globalComponents, table.find(globalComponents, component))
 
 		if component._renderName ~= nil then
 			RunService:UnbindFromRenderStep(component._renderName)
@@ -461,35 +476,29 @@ function Component:_setup()
 			return
 		end
 
-		local id = self[KEY_LOCK_CONSTRUCT][instance] or HttpService:GenerateGUID()
+		local id = self[KEY_LOCK_CONSTRUCT][instance] or 0
+		id += 1
 		self[KEY_LOCK_CONSTRUCT][instance] = id
 
-		task.defer(function()
-			local component = SafeConstruct(instance, id)
+		local component = SafeConstruct(instance, id)
+		if not component then
+			return
+		end
 
-			if not component then
+		self[KEY_INST_TO_COMPONENTS][instance] = component
+		table.insert(self[KEY_COMPONENTS], component)
+
+		-- EDGECASE: Incase in the construction phase of the component, more components
+		-- bound to the same instance arise, so we need to start the component in the next
+		-- invocation point available using `task.defer` to safely handle this - since
+		-- `StartComponent` will wait for other pending component constructions (bound to the
+		-- same instance) to finish before actually starting the component!
+		task.defer(function()
+			if self[KEY_INST_TO_COMPONENTS][instance] ~= component then
 				return
 			end
 
-			self[KEY_INST_TO_COMPONENTS][instance] = component
-			table.insert(self[KEY_COMPONENTS], component)
-
-			task.defer(function()
-				if self[KEY_INST_TO_COMPONENTS][instance] == component then
-					if instancesConstructingPromises[instance] then
-						while instancesConstructingPromises[instance] do
-							instancesConstructingPromises[instance][1]:expect()
-						end
-					end
-
-					-- We need to check again incase the component might have been destroyed
-					-- during the awaiting of other component instances for the same instance
-					-- to be ready..
-					if self[KEY_INST_TO_COMPONENTS][instance] == component then
-						StartComponent(component)
-					end
-				end
-			end)
+			StartComponent(component)
 		end)
 	end
 
@@ -648,8 +657,18 @@ end
 	`construct` is called before the component is started, and should be used
 	to construct the component instance.
 
+	:::warning 
+	You should handle any potential data loading (or any code that needs to yield) in the
+	`construct` method, as the component **will not be started** unless all other components
+	bound to the same instance have been constructed. This addresses [Issue 127](https://github.com/Sleitnick/RbxUtil/issues/127).
+
+	A warn will be outputted in the console after about `10` seconds if there are still other pending components not
+	yet fully constructed, while this component is awaiting to be started. You should ensure all your components construct
+	within reasonable amount of time!
+	:::
+
 	:::note Cancellation
-	If this method has not yet finished when the component instance is stopped, then it will be forcefuly
+	If this method has not yet finished when the component instance is stopped, then it will be forcefully
 	stopped.
 	:::
 
@@ -670,7 +689,7 @@ function Component:construct() end
 	is safe to grab other components also bound to the same instance.
 
 	:::note Cancellation
-	If this method has not yet finished when the component instance is stopped, then it will be forcefuly
+	If this method has not yet finished when the component instance is stopped, then it will be forcefully
 	stopped.
 	:::
 
@@ -836,12 +855,13 @@ end
 
 for callbackIdentifier, event in RUN_SERVICE_EVENTS_TO_CONNECT do
 	event:Connect(function(...)
-		for _, component in components do
+		for _, component in globalComponents do
 			if typeof(component[callbackIdentifier]) ~= "function" then
 				continue
 			end
 
-			-- Components with `renderPriority` set will have
+			-- Components with `renderPriority` set will have a `BindToRenderStep`
+			-- connection hooked up separately.
 			if
 				callbackIdentifier == RUN_SERVICE_EVENTS_TO_CONNECT.renderSteppedUpdate
 				and component.renderPriority ~= nil
