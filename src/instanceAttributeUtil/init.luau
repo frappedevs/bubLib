@@ -13,7 +13,7 @@ local instanceAttributeUtil = {}
 	`desiredAttribute` attribute.
 ]=]
 
-function instanceAttributeUtil.all(instanceTree: Instance, desiredAttribute: string)
+function instanceAttributeUtil.all(instanceTree: Instance, desiredAttribute: string): { Instance }
 	local captured = {}
 
 	for _, descendant in instanceTree:GetDescendants() do
@@ -27,7 +27,7 @@ end
 
 --[=[
 	Works similar to [instanceAttributeUtil.observe], but observes an dictionary of 
-	attributes instead of a single attribute. Returns a [RBXScriptConnection](https://create.roblox.com/docs/reference/engine/datatypes/RBXScriptConnection) object.
+	attributes instead of a single attribute. 
 
 	```lua
 	instanceAttributeUtil.observeMany(workspace, workspace:GetAttributes(), function(newAttributes, oldAttributes)
@@ -63,7 +63,7 @@ end
 
 --[=[
 	Sets up an event connection which listens to any descendant added to `instanceTree`, if it has the
-	`desiredAttribute` atribute, then `callback` will be called. Returns a [RBXScriptConnection](https://create.roblox.com/docs/reference/engine/datatypes/RBXScriptConnection) object.
+	`desiredAttribute` atribute, then `callback` will be called. 
 
 	```lua
 	instanceAttributeUtil.new(workspace, "Test", function(instance)
@@ -226,6 +226,24 @@ function instanceAttributeUtil.instanceAttributesPromise(instance: Instance, att
 	end
 
 	return Promise.all(instanceAttributePromises)
+end
+
+--[=[
+	Sets the attributes of `instance` from the `attributes` table.
+
+	```lua
+	instanceAttributeUtil.setInstanceAttributes(workspace.Baseplate, {IsMayoSauce = true})
+	print(workspace.Baseplate:GetAttribute("IsMayoSauce")) --> true
+	```
+]=]
+
+function instanceAttributeUtil.setInstanceAttributes(
+	instance: Instance,
+	attributes: { [string]: any }
+)
+	for attribute, value in attributes do
+		instance:SetAttribute(attribute, value)
+	end
 end
 
 return table.freeze(instanceAttributeUtil)
