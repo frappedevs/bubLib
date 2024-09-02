@@ -86,7 +86,7 @@ end
     @return Promise<>
 
     :::warning Instance snapshot required
-    This method will throw an error if [instanceUtil.storeInstanceSnapshot] has not been called on `instance`!
+    This method will throw an error if [basePartUtil.storeInstanceSnapshot] has not been called on `instance`!
     :::
 
     :::tip Waiting for an instance's descendants on the client
