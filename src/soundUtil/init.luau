@@ -236,8 +236,6 @@ function soundUtil.playSound3D(sound: Sound, positionOrBasePart: Vector3 | BaseP
 	end
 
 	soundUtil.playSound(sound)
-	sound.Ended:Connect(function() end)
-
 	return sound
 end
 
