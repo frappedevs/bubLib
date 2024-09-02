@@ -1,0 +1,9 @@
+
+[package]
+name = "bubshurb/perinstancedatacacheutil"
+description = "A very simple utility module for storing data unique to every instance in an unique way."
+authors = ["bubshurb"]
+license = "MIT"
+version = "1.0.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
