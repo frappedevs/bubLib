@@ -16,7 +16,7 @@ local function instanceGroundMaterial(
 	raycastParams: RaycastParams?,
 	depth: number
 ): Enum.Material?
-	local corners = basePartUtil.instanceCorners(basePart)
+	local corners = basePartUtil.corners(basePart)
 	local depthVector = Vector3.new(0, depth, 0)
 
 	for index, cornerPosition in corners.top do
@@ -49,7 +49,7 @@ end
 	Returns a read-only dictionary of all corners of `basePart`, top and bottom.
 ]=]
 
-function basePartUtil.instanceCorners(basePart: BasePart): { top: { Vector3 }, bottom: { Vector3 } }
+function basePartUtil.corners(basePart: BasePart): { top: { Vector3 }, bottom: { Vector3 } }
 	local size = basePart.Size
 
 	local frontFaceCenter = (basePart.CFrame + basePart.CFrame.LookVector * size.Z / 2)
@@ -90,7 +90,7 @@ end
 	the ray may not register properly. If this argument isn't specified, then it will default to `0.01`.
 ]=]
 
-function basePartUtil.instanceFloorMaterial(
+function basePartUtil.floorMaterial(
 	basePart: BasePart,
 	raycastParams: RaycastParams?,
 	depth: number?
