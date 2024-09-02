@@ -1,5 +1,5 @@
 [package]
-name = "bubshurb/instanceutil"
+name = "bubshurb/basepartutil"
 description = "An utility module for working with base parts."
 authors = ["bubshurb"]
 license = "MIT"

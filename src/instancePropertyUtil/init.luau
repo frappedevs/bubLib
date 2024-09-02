@@ -43,9 +43,6 @@ end
 	the current value of the property. As the property updates, `observer` will be called being passed
 	*both* the new value of the property *and* the old value.
 
-	Returns a [RBXScriptConnection](https://create.roblox.com/docs/reference/engine/datatypes/RBXScriptConnection)
-	which upon being disconnected; will allow code to know not to observe the property anymore.
-
 	```lua
 	instancePropertyUtil.observeProperty(workspace.Baseplate, "Anchored", function(newPropertyValue, oldPropertyValue)
 		print(newPropertyValue, oldPropertyValue)
