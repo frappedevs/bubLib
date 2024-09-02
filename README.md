@@ -37,7 +37,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [positionUtil](https://babypatrick100.github.io/libraries/api/positionUtil) | `positionUtil = "bubshurb/positionUtil@1.0.0"` | `shared` |
 | [marketPlaceServiceUtil](https://babypatrick100.github.io/libraries/api/marketPlaceServiceUtil) | `marketPlaceServiceUtil = "bubshurb/marketplaceserviceutil@1.1.0` | `shared` |
 | [toolUtil](https://babypatrick100.github.io/libraries/api/toolUtil) | `toolUtil = "bubshurb/tooltil@1.3.0` | `shared` |
-| [soundUtil](https://babypatrick100.github.io/libraries/api/soundUtil) | `soundUtil = "bubshurb/soundutil@1.2.0"` | `shared` |
+| [soundUtil](https://babypatrick100.github.io/libraries/api/soundUtil) | `soundUtil = "bubshurb/soundutil@1.2.1"` | `shared` |
 | [badgeServiceUtil](https://babypatrick100.github.io/libraries/api/badgeServiceUtil) | `badgeServiceUtil = "bubshurb/badgeserviceutil@1.1.0"` | `shared` |
 | [colorUtil](https://babypatrick100.github.io/libraries/api/colorUtil) | `colorUtil = "bubshurb/colorutil@1.1.2"` | `shared` |
 | [serializerUtil](https://babypatrick100.github.io/libraries/api/serializerUtil) | `serializerUtil = "bubshurb/serializerutil@1.1.0"` | `shared` |
@@ -71,6 +71,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [playerCharacterAccessoryUtil](https://babypatrick100.github.io/libraries/api/playerCharacterAccessoryUtil) | `playerCharacterAccessoryUtil = "bubshurb/playercharacteraccessoryUtil@1.0.0"` | `shared` |
 | [evLightning](https://babypatrick100.github.io/libraries/api/evLightning) | `evLightning = "bubshurb/evlightning@1.0.0"` | `shared` |
 | [playerEventsUtil](https://babypatrick100.github.io/libraries/api/playerEventsUtil) | `playerEventsUtil = "bubshurb/playereventsutil@1.1.0"` | `shared` |
+| [soundInitializerUtil](https://babypatrick100.github.io/libraries/api/soundInitializerUtil) | `soundInitializerUtil = "bubshurb/soundinitializerutil@1.0.0"` | `shared` |
 
 ## License notice
 
