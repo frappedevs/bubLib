@@ -72,6 +72,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [evLightning](https://babypatrick100.github.io/libraries/api/evLightning) | `evLightning = "bubshurb/evlightning@1.0.0"` | `shared` |
 | [playerEventsUtil](https://babypatrick100.github.io/libraries/api/playerEventsUtil) | `playerEventsUtil = "bubshurb/playereventsutil@1.1.0"` | `shared` |
 | [soundInitializerUtil](https://babypatrick100.github.io/libraries/api/soundInitializerUtil) | `soundInitializerUtil = "bubshurb/soundinitializerutil@1.0.0"` | `shared` |
+| [clientMovementInputUtil](https://babypatrick100.github.io/libraries/api/clientMovementInputUtil) | `clientMovementInputUtil = "bubshurb/clientmovementinpututil@1.0.0"` | `shared` |
 
 ## License notice
 
