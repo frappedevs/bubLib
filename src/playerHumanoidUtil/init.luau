@@ -10,8 +10,8 @@ local RunService = game:GetService("RunService")
 local Promise = require(script.Parent.Promise)
 local Signal = require(script.Parent.Signal)
 local Connection = require(script.Parent.Connection)
-local instanceUtil = require(script.Parent.instanceUtil)
-local playerTroveUtil = require(script.Parent.playerTroveUtil)
+local instancePropertyUtil = require(script.Parent.instancePropertyUtil)
+local instanceTroveUtil = require(script.Parent.instanceTroveUtil)
 local playerEventsUtil = require(script.Parent.playerEventsUtil)
 
 local playerHumanoidUtil = {}
@@ -55,7 +55,7 @@ end
 
 function playerHumanoidUtil.playerHumanoidPromise(player: Player)
 	local connections = {}
-	local playerTrove = playerTroveUtil.playerTrove(player)
+	local playerTrove = instanceTroveUtil.instanceTrove(player)
 
 	local thisPlayerHumanoidPromise = playerTrove:AddPromise(Promise.new(function(resolve)
 		local playerHumanoid = playerHumanoidUtil.playerHumanoid(player)
@@ -129,7 +129,7 @@ function playerHumanoidUtil.trySeatPlayerPromise(player: Player, seat: VehicleSe
 
 	assert(player:IsDescendantOf(Players), "Player must be in game!")
 
-	local playerTrove = playerTroveUtil.playerTrove(player)
+	local playerTrove = instanceTroveUtil.instanceTrove(player)
 	return playerTrove:AddPromise(Promise.new(function(resolve, reject, onCancel)
 		local humanoid = playerHumanoidUtil.playerHumanoidPromise(player):expect()
 
@@ -186,7 +186,7 @@ function playerHumanoidUtil.forceSeatPlayerPromise(player: Player, seat: Vehicle
 
 	assert(player:IsDescendantOf(Players), "Player must be in game!")
 
-	local playerTrove = playerTroveUtil.playerTrove(player)
+	local playerTrove = instanceTroveUtil.instanceTrove(player)
 	return playerTrove:AddPromise(Promise.new(function(resolve, onCancel)
 		local humanoid = playerHumanoidUtil.playerHumanoidPromise(player):expect()
 
@@ -266,7 +266,7 @@ function playerHumanoidUtil.playerHumanoidSeatPartObserver(
 				:andThen(function(newHumanoid)
 					table.insert(
 						connections,
-						instanceUtil.observeProperty(
+						instancePropertyUtil.observeProperty(
 							newHumanoid,
 							"SeatPart",
 							function(newSeatPart, oldSeatPart)
