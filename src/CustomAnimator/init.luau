@@ -11,8 +11,14 @@
 ]=]
 
 --[=[ 
-    @type CustomAnimator CustomAnimator 
-    @within CustomAnimator
+	@type CustomAnimator CustomAnimator 
+	@within CustomAnimator
+]=]
+
+--[=[ 
+	@prop onAnimationLoaded Signal
+	@tag CustomAnimator Instance 
+	@within CustomAnimator
 ]=]
 
 local Promise = require(script.Parent.Promise)
@@ -44,11 +50,13 @@ function CustomAnimator.new(animator: Animator | AnimationController)
 	return setmetatable({
 		_animator = animator,
 		_loadedAnimationTracks = {},
-		_onAnimationLoaded = Signal.new(),
+		onAnimationLoaded = Signal.new(),
 	}, CustomAnimator)
 end
 
 --[=[ 
+	@tag CustomAnimator instance
+
 	Returns the given loaded animation track from the animation, if found.
 ]=]
 
@@ -57,13 +65,17 @@ function CustomAnimator.__index:animationTrack(animation: Animation): AnimationT
 end
 
 --[=[ 
+	@tag CustomAnimator instance
+
 	Returns a promise which is resolved once the given animation is loaded via [CustomAnimator:loadAnimation].
+
+	@return Promise<Animation>
 ]=]
 
 function CustomAnimator.__index:onAnimationLoadPromise(animation: Animation)
 	return Promise.new(function(resolve)
 		while self._loadedAnimationTracks[animation] == nil do
-			self._onAnimationLoaded:Wait()
+			self.onAnimationLoaded:Wait()
 		end
 
 		resolve(animation)
@@ -71,17 +83,21 @@ function CustomAnimator.__index:onAnimationLoadPromise(animation: Animation)
 end
 
 --[=[ 
+	@tag CustomAnimator instance
+
 	Loads in the animation as an animation track.
 ]=]
 
 function CustomAnimator.__index:loadAnimation(animation: Animation): AnimationTrack
 	local animationTrack: AnimationTrack = self._animator:LoadAnimation(animation)
 	self._loadedAnimationTracks[animation] = animationTrack
-	self._onAnimationLoaded:Fire(animation)
+	self.onAnimationLoaded:Fire(animation)
 	return animationTrack
 end
 
 --[=[ 
+	@tag CustomAnimator instance
+
 	Plays the given animation, if it has been loaded into the animator object via [CustomAnimator:loadAnimation].
 
 	:::tip
@@ -115,6 +131,8 @@ function CustomAnimator.__index:playAnimation(
 end
 
 --[=[ 
+	@tag CustomAnimator instance
+
 	Stops the given animation, if it has been loaded into the animator object via [CustomAnimator:loadAnimation].
 
 	:::tip
@@ -140,6 +158,8 @@ function CustomAnimator.__index:stopAnimation(
 end
 
 --[=[ 
+	@tag CustomAnimator instance
+
 	Stops all loaded animations by calling [CustomAnimator:stopAnimation] on each loaded animation.
 ]=]
 
@@ -150,7 +170,9 @@ function CustomAnimator.__index:stopAll(fadeTime: number?)
 end
 
 --[=[ 
-	Returns a read only array of all animations loaded into the animator object.
+	@tag CustomAnimator instance
+
+	Returns a read only copy array of all animations loaded into the animator object.
 ]=]
 
 function CustomAnimator.__index:all(): { [Animation]: AnimationTrack }
@@ -158,6 +180,8 @@ function CustomAnimator.__index:all(): { [Animation]: AnimationTrack }
 end
 
 --[=[ 
+	@tag CustomAnimator instance
+
 	Stops the given animation track if loaded, and destroys it. 
 ]=]
 
@@ -173,6 +197,8 @@ function CustomAnimator.__index:cleanupAnimationTrack(animation: Animation)
 end
 
 --[=[ 
+	@tag CustomAnimator instance
+
 	Returns the animator associated to the animator object.
 ]=]
 
@@ -181,6 +207,8 @@ function CustomAnimator.__index:animator(): Animator
 end
 
 --[=[ 
+	@tag CustomAnimator instance
+	
 	Destroys the custom animator object and renders it unusuable. Additionally, [CustomAnimator:cleanupAnimationTrack] is called
 	on all loaded animation tracks too.
 ]=]
@@ -190,7 +218,7 @@ function CustomAnimator.__index:destroy()
 		self:cleanupAnimationTrack(animation)
 	end
 
-	self._onAnimationLoaded:Destroy()
+	self.onAnimationLoaded:Destroy()
 	setmetatable(self, nil)
 end
 
