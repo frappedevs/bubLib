@@ -139,7 +139,7 @@ function CustomAnimator.__index:tryPlayAnimation(
 	weight = weight or animation:GetAttribute(ANIM_WEIGHT_TIME_ATTRIBUTE)
 	speed = speed or animation:GetAttribute(ANIM_SPEED_TIME_ATTRIBUTE)
 	animationTrack.Priority = priority or animationTrack.Priority
-	animationTrack:Play()
+	animationTrack:Play(fadeTime, weight, speed)
 	return animationTrack
 end
 
