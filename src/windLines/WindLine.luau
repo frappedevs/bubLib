@@ -41,7 +41,10 @@ function WindLine.is(self: any): boolean
 end
 
 function WindLine.__index:destroy()
-	table.remove(self._updateQueue, table.find(self._updateQueue, self))
+	local index = table.find(self._updateQueue, self)
+	if index ~= nil then
+		table.remove(self._updateQueue, index)
+	end
 
 	self.attachment0:Destroy()
 	self.trail:Destroy()

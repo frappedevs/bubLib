@@ -445,7 +445,10 @@ function Component:_setup()
 	end
 
 	local function StopComponent(component)
-		table.remove(globalComponents, table.find(globalComponents, component))
+		local index = table.find(globalComponents, component)
+		if index ~= nil then
+			table.remove(globalComponents, index)
+		end
 
 		if component._renderName ~= nil then
 			RunService:UnbindFromRenderStep(component._renderName)

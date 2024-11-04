@@ -161,14 +161,18 @@ end
 ]=]
 
 function ContentProviderQueue.__index:remove(instance: Instance)
-	local index = table.find(self._instances, instance)
+	local instanceIndex = table.find(self._instances, instance)
 
-	if index then
+	if instanceIndex ~= nil then
 		self._instancesToPreload -= 1
-		table.remove(self._instances, index)
+		table.remove(self._instances, instanceIndex)
 	end
 
-	table.remove(self._instancesPreloading, table.find(self._instancesPreloading, instance))
+	local instancePreloadingIndex = table.find(self._instancesPreloading, instance)
+	if instancePreloadingIndex ~= nil then
+		table.remove(self._instancesPreloading, instancePreloadingIndex)
+	end
+
 	self.onInstanceRemoved:Fire(instance)
 end
 
@@ -262,7 +266,11 @@ function ContentProviderQueue.__index:_init()
 	table.insert(contentProviderQueues, self)
 
 	self._janitor:Add(function()
-		table.remove(contentProviderQueues, table.find(contentProviderQueues, self))
+		local index = table.find(contentProviderQueues, self)
+		if index ~= nil then
+			table.remove(contentProviderQueues, index)
+		end
+
 		self:empty()
 		setmetatable(self, nil)
 	end)

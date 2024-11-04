@@ -742,7 +742,10 @@ function RemoteProperty.__index:observeClientsValue(observer: (
 	table.insert(self._clientsValueObservers, observer)
 
 	return Connection.new(function()
-		table.remove(self._clientsValueObservers, table.find(self._clientsValueObservers, observer))
+		local index = table.find(self._clientsValueObservers, observer)
+		if index ~= nil then
+			table.remove(self._clientsValueObservers, index)
+		end
 	end)
 end
 

@@ -9,13 +9,13 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [ValueMultiplier](https://babypatrick100.github.io/libraries/api/ValueMultiplier) | `ValueMultiplier = "bubshurb/valuemultiplier@1.0.0` | `shared` |
 | [Connection](https://babypatrick100.github.io/libraries/api/Connection) | `Connection = "bubshurb/connection@1.0.0` | `shared` |
 | [Matcher](https://babypatrick100.github.io/libraries/api/Matcher) | `Matcher = "bubshurb/matcher@1.0.0` | `shared` |
-| [Component](https://babypatrick100.github.io/libraries/api/Component) | `Component = "bubshurb/component@1.2.1` | `shared` |
+| [Component](https://babypatrick100.github.io/libraries/api/Component) | `Component = "bubshurb/component@1.2.2` | `shared` |
 | [Hover](https://babypatrick100.github.io/libraries/api/Hover) | `Hover = "bubshurb/hover@1.1.0` | `shared` |
-| [ContentProviderQueue](https://babypatrick100.github.io/libraries/api/ContentProviderQueue) | `ContentProviderQueue = "bubshurb/contentproviderqueue@1.1.0"` | `shared` |
+| [ContentProviderQueue](https://babypatrick100.github.io/libraries/api/ContentProviderQueue) | `ContentProviderQueue = "bubshurb/contentproviderqueue@1.1.1"` | `shared` |
 | [CustomAnimator](https://babypatrick100.github.io/libraries/api/CustomAnimator) | `CustomAnimator = "bubshurb/customanimator@1.6.2"` | `shared` |
 | [Property](https://babypatrick100.github.io/libraries/api/Property) | `Property = "bubshurb/property@2.4.1"` | `shared` |
-| [network](https://babypatrick100.github.io/libraries/api/network) | `network = "bubshurb/network@2.4.1"` | `shared` |
-| [windLines](https://babypatrick100.github.io/libraries/api/windLines) | `windLines = "bubshurb/windlines@1.0.0"` | `shared` |
+| [network](https://babypatrick100.github.io/libraries/api/network) | `network = "bubshurb/network@2.4.2"` | `shared` |
+| [windLines](https://babypatrick100.github.io/libraries/api/windLines) | `windLines = "bubshurb/windlines@1.0.1"` | `shared` |
 | [matrixUtil](https://babypatrick100.github.io/libraries/api/matrixUtil) | `matrixUtil = "bubshurb/matrixutil@1.0.0"` | `shared` |
 | [basePartUtil](https://babypatrick100.github.io/libraries/api/basePartUtil) | `basePartUtil = "bubshurb/basepartutil@1.0.0"` | `shared` |
 | [numberUtil](https://babypatrick100.github.io/libraries/api/numberUtil) | `numberUtil = "bubshurb/numberutil@1.1.0"` | `shared` |
@@ -41,7 +41,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [badgeServiceUtil](https://babypatrick100.github.io/libraries/api/badgeServiceUtil) | `badgeServiceUtil = "bubshurb/badgeserviceutil@1.1.0"` | `shared` |
 | [colorUtil](https://babypatrick100.github.io/libraries/api/colorUtil) | `colorUtil = "bubshurb/colorutil@1.1.2"` | `shared` |
 | [serializerUtil](https://babypatrick100.github.io/libraries/api/serializerUtil) | `serializerUtil = "bubshurb/serializerutil@1.1.0"` | `shared` |
-| [instanceTrackerUtil](https://babypatrick100.github.io/libraries/api/instanceTrackerUtil) | `instanceTrackerUtil = "bubshurb/instancetrackerutil@1.2.1"` | `shared` |
+| [instanceTrackerUtil](https://babypatrick100.github.io/libraries/api/instanceTrackerUtil) | `instanceTrackerUtil = "bubshurb/instancetrackerutil@1.2.2"` | `shared` |
 | [instanceAttributeUtil](https://babypatrick100.github.io/libraries/api/instanceAttributeUtil) | `instanceAttributeUtil = "bubshurb/instanceattributeutil@1.3.0"` | `shared` |
 | [instanceTagUtil](https://babypatrick100.github.io/libraries/api/instanceTagUtil) | `instanceTagUtil = "bubshurb/instancetagutil@1.0.2"` | `shared` |
 | [numberUnitUtil](https://babypatrick100.github.io/libraries/api/numberUnitUtil) | `numberUnitUtil = "bubshurb/numberunitutil@1.0.0"` | `shared` |
@@ -51,7 +51,7 @@ libraries is a collection of my open Roblox sourced modules. All of them can be 
 | [weldConstraintUtil](https://babypatrick100.github.io/libraries/api/weldConstraintUtil) | `weldConstraintUtil = "bubshurb/weldconstraintutil@1.0.1"` | `shared` |
 | [viewportFrameUtil](https://babypatrick100.github.io/libraries/api/viewportFrameUtil) | `viewportFrameUtil = "bubshurb/viewportframeutil@1.1.0"` | `shared` |
 | [timeFormatUtil](https://babypatrick100.github.io/libraries/api/timeFormatUtil) | `timeFormatUtil = "bubshurb/timeformatutil@1.0.1"` | `shared` |
-| [queryUtil](https://babypatrick100.github.io/libraries/api/queryUtil) | `queryUtil = "bubshurb/queryutil@1.3.0"` | `shared` |
+| [queryUtil](https://babypatrick100.github.io/libraries/api/queryUtil) | `queryUtil = "bubshurb/queryutil@1.3.1"` | `shared` |
 | [instanceTranslationUtil](https://babypatrick100.github.io/libraries/api/instanceTranslationUtil) | `instanceTranslationUtil = "bubshurb/instancetranslationutil@1.0.0"` | `shared` |
 | [guiObjectFadeUtil](https://babypatrick100.github.io/libraries/api/guiObjectFadeUtil) | `guiObjectFadeUtil = "bubshurb/guiobjectefadeutil@1.0.0"` | `shared` |
 | [clientMouseUtil](https://babypatrick100.github.io/libraries/api/clientMouseUtil) | `clientMouseUtil = "bubshurb/clientmouseutil@1.1.0"` | `shared` |

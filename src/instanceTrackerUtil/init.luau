@@ -363,10 +363,10 @@ function instanceTrackerUtil.setProps(instance: Instance, props: { [string]: any
 	return Connection.new(function()
 		for _, connection in connections do
 			if initializedInstanceAncestor ~= nil then
-				table.remove(
-					initializedInstanceAncestor.propConnections,
-					table.find(initializedInstanceAncestor.propConnections, connection)
-				)
+				local index = table.find(initializedInstanceAncestor.propConnections, connection)
+				if index ~= nil then
+					table.remove(initializedInstanceAncestor.propConnections, index)
+				end
 			end
 
 			connection:Disconnect()

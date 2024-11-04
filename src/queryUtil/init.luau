@@ -89,7 +89,11 @@ function queryUtil.query<T>(
 
 	trove:Add(connectToEvent(queryRemoving, function(resultRemoving)
 		local queryResultsNow = queryResultsProperty:get()
-		table.remove(queryResultsNow, table.find(queryResultsNow, resultRemoving))
+		local index = table.find(queryResultsNow, resultRemoving)
+		if index ~= nil then
+			table.remove(queryResultsNow, index)
+		end
+
 		queryResultsProperty:set(queryResultsNow)
 	end))
 

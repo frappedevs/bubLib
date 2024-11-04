@@ -182,7 +182,11 @@ function soundUtil.playSound(sound: Sound): Sound
 			mapped3DSoundHolders[sound] = nil
 			soundCleanupCallbacks[sound] = nil
 			soundHeartbeatCallbacks[sound] = nil
-			table.remove(registeredSounds, table.find(registeredSounds, sound))
+
+			local index = table.find(registeredSounds, sound)
+			if index ~= nil then
+				table.remove(registeredSounds, index)
+			end
 		end)
 	end
 
